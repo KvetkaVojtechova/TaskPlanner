@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -18,7 +19,7 @@ public class NewTaskActivity extends AppCompatActivity {
 
     private EditText mEditTextTitle;
     private EditText mEditTextDescription;
-    private EditText mEditTextDueDate;
+    private TextView mEditTextDueDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,14 @@ public class NewTaskActivity extends AppCompatActivity {
         mEditTextDueDate = findViewById(R.id.edit_text_date);
 
         final Button button = findViewById(R.id.button_save);
+
+        mEditTextDueDate.setOnClickListener(v ->
+            new DateTimePicker().invoke(
+                NewTaskActivity.this,
+                (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) ->
+                    mEditTextDueDate.setText("selectedHour " + selectedHour)
+            )
+        );
 
         button.setOnClickListener(view -> {
             Intent replyIntent = new Intent();
