@@ -17,10 +17,10 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/text_view_title"
@@ -44,11 +44,10 @@
 
         <ImageView
             android:id="@+id/image_view_state"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_round_created_24"
-            android:layout_weight="0.1"
-            android:minWidth="50dp"/>
+            android:layout_width="48dp"
+            android:layout_height="match_parent" />
+            <!--android:src="@drawable/ic_round_created_24"-->
+
 
     </LinearLayout>
     <LinearLayout

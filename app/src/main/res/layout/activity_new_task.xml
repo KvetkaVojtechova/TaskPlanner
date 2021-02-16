@@ -56,7 +56,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"/>
 
-    <EditText
+    <TextView
+        android:padding="8dp"
         android:id="@+id/edit_text_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

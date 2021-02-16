@@ -13,16 +13,16 @@ import java.util.List;
 public interface TaskDao {
 
     @Insert
-    void insert(TaskEntity tasks);
+    void insert(Task tasks);
 
     @Delete
-    void delete(TaskEntity task);
+    void delete(Task task);
 
     @Update
-    void update(TaskEntity tasks);
+    void update(Task tasks);
 
     @Query("SELECT * FROM tasks")
-    LiveData<List<TaskEntity>> getAll();
+    LiveData<List<Task>> getAll();
 
     @Query("DELETE  FROM tasks")
     void deleteAll();

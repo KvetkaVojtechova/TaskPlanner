@@ -26,13 +26,20 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
         mTaskState = itemView.findViewById(R.id.image_view_state);
     }
 
-    public void bind(TaskEntity task) {
+    public void bind(Task task) {
         mTaskTitle.setText(task.title);
         mTaskDesc.setText(task.description);
         if (task.dueDate != null) {
-            mTaskDueDate.setText(task.dueDate.toString());
+            String dueDate = DateConverters.DateToString(task.dueDate);
+            mTaskDueDate.setText(dueDate);
         }
-        //mTaskState.setImageDrawable();
+        if (task.state == State.created) {
+            mTaskState.setImageResource(R.drawable.ic_round_created_24);
+        } else if (task.state == State.inProgress) {
+            mTaskState.setImageResource(R.drawable.ic_baseline_in_progress_24);
+        } else {
+            mTaskState.setImageResource(R.drawable.ic_baseline_closed_24);
+        }
     }
 
     static TaskViewHolder create(ViewGroup parent) {

@@ -17,4 +17,11 @@ public class DateConverters {
         }
     }
 
+    public static String DateToString (Date date){
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        String dateTime = dateFormat.format(date);
+        return dateTime;
+    }
+
 }

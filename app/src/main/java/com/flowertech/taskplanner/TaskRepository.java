@@ -9,7 +9,7 @@ import java.util.List;
 
 class TaskRepository {
     private TaskDao mTaskDao;
-    private LiveData<List<TaskEntity>> mAllTasks;
+    private LiveData<List<Task>> mAllTasks;
 
     TaskRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
@@ -17,25 +17,25 @@ class TaskRepository {
         mAllTasks = mTaskDao.getAll();
     }
 
-    LiveData<List<TaskEntity>> getAllTasks() {
+    LiveData<List<Task>> getAllTasks() {
         return mAllTasks;
     }
 
-    void insert(TaskEntity taskEntity) {
+    void insert(Task task) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            mTaskDao.insert(taskEntity);
+            mTaskDao.insert(task);
         });
     }
 
-    void update(TaskEntity taskEntity) {
+    void update(Task task) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            mTaskDao.update(taskEntity);
+            mTaskDao.update(task);
         });
     }
 
-    void delete(TaskEntity taskEntity) {
+    void delete(Task task) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            mTaskDao.delete(taskEntity);
+            mTaskDao.delete(task);
         });
     }
 

@@ -4,15 +4,19 @@ package com.flowertech.taskplanner;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(tableName = "tasks")
-public class TaskEntity implements Serializable {
+@Entity(tableName = "tasks"/*, foreignKeys = @ForeignKey(entity = Category.class,
+        parentColumns = "id",
+        childColumns = "categoryId",
+        onDelete = ForeignKey.NO_ACTION)*/)
+public class Task implements Serializable {
 
-    public TaskEntity() {
+    public Task() {
         this.created = new Date();
     }
 

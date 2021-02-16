@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {TaskEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {Task.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
@@ -43,14 +43,14 @@ public abstract class AppDatabase extends RoomDatabase {
             databaseWriteExecutor.execute(() -> {
                 TaskDao dao = INSTANCE.taskDao();
 
-                TaskEntity taskEntity = new TaskEntity();
-                taskEntity.title = "Exam";
-                taskEntity.state = State.created;
-                dao.insert(taskEntity);
-                taskEntity = new TaskEntity();
-                taskEntity.title = "Homework";
-                taskEntity.state = State.created;
-                dao.insert(taskEntity);
+                Task task = new Task();
+                task.title = "Exam";
+                task.state = State.inProgress;
+                dao.insert(task);
+                task = new Task();
+                task.title = "Homework";
+                task.state = State.closed;
+                dao.insert(task);
             });
         }
     };

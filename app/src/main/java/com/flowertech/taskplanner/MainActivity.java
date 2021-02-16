@@ -1,24 +1,20 @@
 package com.flowertech.taskplanner;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
     private TaskViewModel mTaskViewModel;
@@ -48,6 +44,20 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, NewTaskActivity.class);
             startActivityForResult(intent, NEW_TASK_ACTIVITY_REQUEST_CODE);
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                mTaskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(MainActivity.this, "Task deleted", Toast.LENGTH_LONG).show();
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -56,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == NEW_TASK_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
 
             Bundle bundle = data.getExtras();
-            TaskEntity task = (TaskEntity) bundle.getSerializable(NewTaskActivity.EXTRA_TASK);
+            Task task = (Task) bundle.getSerializable(NewTaskActivity.EXTRA_TASK);
 
             mTaskViewModel.insert(task);
         } else {
@@ -65,6 +75,25 @@ public class MainActivity extends AppCompatActivity {
                     R.string.empty_not_saved,
                     Toast.LENGTH_LONG).show();
 
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_all_tasks:
+                mTaskViewModel.deleteAllTasks();
+                Toast.makeText(this, "All tasks deleted", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

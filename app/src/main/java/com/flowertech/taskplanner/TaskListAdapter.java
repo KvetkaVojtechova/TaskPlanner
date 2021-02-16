@@ -1,14 +1,15 @@
 package com.flowertech.taskplanner;
 
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
-public class TaskListAdapter extends ListAdapter<TaskEntity, TaskViewHolder> {
+public class TaskListAdapter extends ListAdapter<Task, TaskViewHolder> {
 
-    public TaskListAdapter(@NonNull DiffUtil.ItemCallback<TaskEntity> diffCallBack) {
+    public TaskListAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallBack) {
         super(diffCallBack);
     }
 
@@ -19,19 +20,24 @@ public class TaskListAdapter extends ListAdapter<TaskEntity, TaskViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        TaskEntity current = getItem(position);
+        Task current = getItem(position);
         holder.bind(current);
     }
 
-    static class TaskDiff extends DiffUtil.ItemCallback<TaskEntity> {
+    public Task getTaskAt(int position){
+        Task current = getItem(position);
+        return current;
+    }
+
+    static class TaskDiff extends DiffUtil.ItemCallback<Task> {
 
         @Override
-        public boolean areItemsTheSame(@NonNull TaskEntity oldItem, @NonNull TaskEntity newItem) {
+        public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
             return oldItem == newItem;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull TaskEntity oldItem, @NonNull TaskEntity newItem) {
+        public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
             return oldItem.title.equals(newItem.title);
         }
     }
