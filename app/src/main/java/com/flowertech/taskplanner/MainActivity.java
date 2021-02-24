@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
     private TaskViewModel mTaskViewModel;
     public static final int NEW_TASK_ACTIVITY_REQUEST_CODE = 1;
+    public static final int EDIT_TASK_ACTIVITY_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +39,14 @@ public class MainActivity extends AppCompatActivity {
             adapter.submitList(taskEntities);
         });
 
-
+        //when floating button is clicked, start NewTaskActivity
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, NewTaskActivity.class);
             startActivityForResult(intent, NEW_TASK_ACTIVITY_REQUEST_CODE);
         });
 
+        //deletes task on swipe to the right
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.RIGHT) {
             @Override
@@ -58,26 +60,43 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Task deleted", Toast.LENGTH_LONG).show();
             }
         }).attachToRecyclerView(recyclerView);
+
+        //when task is clicked, start EditTaskActivity
+        adapter.setOnItemClickListener(new TaskListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Task task = adapter.getTaskAt(position);
+                Intent intent = new Intent(MainActivity.this, EditTaskActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(EditTaskActivity.EDIT_TASK, task);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
+            }
+        });
     }
 
+    //if RESULT_OK in NewTaskActivity, then insert task into TaskViewModel,
+    //otherwise Toast
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEW_TASK_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-
             Bundle bundle = data.getExtras();
             Task task = (Task) bundle.getSerializable(NewTaskActivity.EXTRA_TASK);
-
             mTaskViewModel.insert(task);
+        } else if(requestCode == EDIT_TASK_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK){
+            Bundle bundle = data.getExtras();
+            Task task = (Task) bundle.getSerializable(EditTaskActivity.EDIT_TASK);
+            mTaskViewModel.update(task);
         } else {
             Toast.makeText(
                     getApplicationContext(),
                     R.string.empty_not_saved,
                     Toast.LENGTH_LONG).show();
-
         }
     }
 
+    //creates menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -85,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //put deleteAllTasks into menu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

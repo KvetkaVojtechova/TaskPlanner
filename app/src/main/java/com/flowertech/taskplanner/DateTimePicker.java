@@ -35,10 +35,4 @@ public class DateTimePicker {
     interface OnDateTimePicked {
         void onDateTimePicked(int selectedYear, int selectedMonth, int selectedDay, int selectedHour, int selectedMinute);
     }
-
-
-
-
-
-
 }

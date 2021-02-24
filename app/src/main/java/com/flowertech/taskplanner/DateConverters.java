@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class DateConverters {
 
+    //converts String into Date
     public static Date StringToDate(String str){
 
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
@@ -17,6 +18,7 @@ public class DateConverters {
         }
     }
 
+    //converts Date into String
     public static String DateToString (Date date){
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");

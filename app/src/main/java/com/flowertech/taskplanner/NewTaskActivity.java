@@ -28,9 +28,9 @@ public class NewTaskActivity extends AppCompatActivity {
         mEditTextTitle = findViewById(R.id.edit_text_title);
         mEditTextDescription = findViewById(R.id.edit_text_description);
         mTextViewDueDate = findViewById(R.id.edit_text_date);
-
         final Button button = findViewById(R.id.button_save);
 
+        //when clicked on mTextViewDueDate, invoke datetime picker and setText to mTextViewDueDate
         mTextViewDueDate.setOnClickListener(v ->
                 new DateTimePicker().invoke(
                         NewTaskActivity.this,
@@ -39,8 +39,10 @@ public class NewTaskActivity extends AppCompatActivity {
                 )
         );
 
+        //when button is clicked validate data and setResult
         button.setOnClickListener(view -> {
             Intent replyIntent = new Intent();
+
             if(TextUtils.isEmpty(mEditTextTitle.getText()) &&
                     TextUtils.isEmpty(mEditTextDescription.getText()) &&
                     TextUtils.isEmpty(mTextViewDueDate.getText())) {

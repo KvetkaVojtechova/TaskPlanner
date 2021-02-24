@@ -22,6 +22,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
+    //creates database if there is none, otherwise returns instance
     static AppDatabase getDatabase(final Context context){
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -35,6 +36,7 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    //creates two tasks
     private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {

@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".NewTaskActivity">
-
+    tools:context=".EditTaskActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,7 +15,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="150dp"/>
+        android:layout_marginTop="100dp"/>
 
     <EditText
         android:id="@+id/edit_text_title"
@@ -27,7 +26,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"/>
-
 
     <TextView
         android:layout_width="match_parent"
@@ -47,6 +45,14 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/category"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -73,19 +79,56 @@
         android:text="@string/set_reminder"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"/>
 
+    <TextView
+        android:id="@+id/text_view_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:id="@+id/image_view_state_1"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="30dp"
+            android:src="@drawable/ic_round_created_24"
+            />
+
+        <ImageView
+            android:id="@+id/image_view_state_2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="30dp"
+            android:src="@drawable/ic_baseline_in_progress_24"/>
+
+        <ImageView
+            android:id="@+id/image_view_state_3"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_baseline_closed_24"/>
+
+    </LinearLayout>
     <Button
         android:id="@+id/button_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="100dp"
         android:layout_marginLeft="100dp"
-        android:background="#6091B8"
+        android:background="@color/blueGray"
         android:text="@string/button_save"
         android:textColor="@color/buttonLabel"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-
 </LinearLayout>
