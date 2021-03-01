@@ -5,10 +5,11 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity(tableName = "categories")
-public class Category {
+public class Category implements Serializable {
 
     public Category() {
         this.created = new Date();

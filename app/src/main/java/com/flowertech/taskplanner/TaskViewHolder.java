@@ -53,7 +53,7 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
     }
 
     static TaskViewHolder create(ViewGroup parent, TaskListAdapter.OnItemClickListener listener) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_recyclerview_item, parent, false);
         return new TaskViewHolder(view, listener);
     }
 }

@@ -17,31 +17,31 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MainActivity extends AppCompatActivity {
-    private TaskViewModel mTaskViewModel;
-    public static final int NEW_TASK_ACTIVITY_REQUEST_CODE = 1;
-    public static final int EDIT_TASK_ACTIVITY_REQUEST_CODE = 2;
+public class CategoryActivity extends AppCompatActivity {
+    private CategoryViewModel mCategoryViewModel;
+    public static final int NEW_CATEGORY_ACTIVITY_REQUEST_CODE = 1;
+    public static final int EDIT_CATEGORY_ACTIVITY_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_category);
 
         //Initialize and assign variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         //Set tasks_page selected
-        bottomNavigationView.setSelectedItemId(R.id.tasks_page);
+        bottomNavigationView.setSelectedItemId(R.id.categories_page);
         //Perform ItemSelectedListener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.categories_page:
+                    case R.id.tasks_page:
                         startActivity(new Intent(getApplicationContext(),
-                                CategoryActivity.class));
+                                MainActivity.class));
                         overridePendingTransition(0, 0);
                         return true;
-                    case R.id.tasks_page:
+                    case R.id.categories_page:
                         return true;
                 }
                 return false;
@@ -53,23 +53,24 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        final TaskListAdapter adapter = new TaskListAdapter(new TaskListAdapter.TaskDiff());
+        final CategoryListAdapter adapter = new CategoryListAdapter(new CategoryListAdapter.CategoryDiff());
+        //set adapter to recyclerview
         recyclerView.setAdapter(adapter);
 
-        mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
+        mCategoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
 
-        mTaskViewModel.getAllTasks().observe(this, taskEntities -> {
-            adapter.submitList(taskEntities);
+        mCategoryViewModel.getAllCategories().observe(this, categoryEntities -> {
+            adapter.submitList(categoryEntities);
         });
 
         //when floating button is clicked, start NewTaskActivity
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, NewTaskActivity.class);
-            startActivityForResult(intent, NEW_TASK_ACTIVITY_REQUEST_CODE);
+            Intent intent = new Intent(CategoryActivity.this, NewCategoryActivity.class);
+            startActivityForResult(intent, NEW_CATEGORY_ACTIVITY_REQUEST_CODE);
         });
 
-        //deletes task on swipe to the right
+        //deletes category on swipe to the right
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.RIGHT) {
             @Override
@@ -79,42 +80,42 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                mTaskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(MainActivity.this, R.string.task_deleted, Toast.LENGTH_LONG).show();
+                mCategoryViewModel.delete(adapter.getCategoryAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(CategoryActivity.this, R.string.category_deleted, Toast.LENGTH_LONG).show();
             }
         }).attachToRecyclerView(recyclerView);
 
-        //when task is clicked, start EditTaskActivity
-        adapter.setOnItemClickListener(new TaskListAdapter.OnItemClickListener() {
+        //when category is clicked, start EditCategoryActivity
+        adapter.setOnItemClickListener(new CategoryListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Task task = adapter.getTaskAt(position);
-                Intent intent = new Intent(MainActivity.this, EditTaskActivity.class);
+                Category category = adapter.getCategoryAt(position);
+                Intent intent = new Intent(CategoryActivity.this, EditCategoryActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(EditTaskActivity.EDIT_TASK, task);
+                bundle.putSerializable(EditCategoryActivity.EDIT_CATEGORY, category);
                 intent.putExtras(bundle);
-                startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(intent, EDIT_CATEGORY_ACTIVITY_REQUEST_CODE);
             }
         });
     }
 
-    //if RESULT_OK in NewTaskActivity, then insert task into TaskViewModel,
+    //if RESULT_OK in NewCategoryActivity, then insert category into CategoryViewModel,
     //otherwise Toast
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == NEW_TASK_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == NEW_CATEGORY_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
-            Task task = (Task) bundle.getSerializable(NewTaskActivity.EXTRA_TASK);
-            mTaskViewModel.insert(task);
-        } else if(requestCode == EDIT_TASK_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK){
+            Category category = (Category) bundle.getSerializable(NewCategoryActivity.EXTRA_CATEGORY);
+            mCategoryViewModel.insert(category);
+        } else if(requestCode == EDIT_CATEGORY_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK){
             Bundle bundle = data.getExtras();
-            Task task = (Task) bundle.getSerializable(EditTaskActivity.EDIT_TASK);
-            mTaskViewModel.update(task);
+            Category category = (Category) bundle.getSerializable(EditCategoryActivity.EDIT_CATEGORY);
+            mCategoryViewModel.update(category);
         } else {
             Toast.makeText(
                     getApplicationContext(),
-                    R.string.empty_not_saved,
+                    R.string.empty_not_saved_cat,
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
+        menuInflater.inflate(R.menu.category_menu, menu);
         return true;
     }
 
@@ -131,9 +132,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.delete_all_tasks:
-                mTaskViewModel.deleteAllTasks();
-                Toast.makeText(this, R.string.all_tasks_deleted, Toast.LENGTH_SHORT).show();
+            case R.id.delete_all_categories:
+                mCategoryViewModel.deleteAllCategories();
+                Toast.makeText(this, R.string.all_categories_deleted, Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -10,10 +10,12 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(tableName = "tasks"/*, foreignKeys = @ForeignKey(entity = Category.class,
+@Entity(tableName = "tasks"/*,
+        foreignKeys = {@ForeignKey(entity = Category.class,
         parentColumns = "id",
-        childColumns = "categoryId",
-        onDelete = ForeignKey.NO_ACTION)*/)
+        childColumns = "category_id",
+        onDelete = ForeignKey.NO_ACTION,
+        onUpdate = ForeignKey.CASCADE)}*/)
 public class Task implements Serializable {
 
     public Task() {

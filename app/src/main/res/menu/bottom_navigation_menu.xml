@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/tasks_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_tasks_24"
+        android:title="@string/tasks_page"/>
+
+    <item
+        android:id="@+id/categories_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_categories_24"
+        android:title="@string/categories_page"/>
+</menu>

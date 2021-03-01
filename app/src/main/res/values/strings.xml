@@ -3,11 +3,17 @@
 
     <!-- Main Menu-->
     <string name="menu_delete_all_tasks">Delete all tasks</string>
+    <string name="all_tasks_deleted">All tasks deleted.</string>
 
-    <!-- Activity Main Menu-->
+    <!-- Bottom Navigation Menu-->
+    <string name="tasks_page">Tasks</string>
+    <string name="categories_page">Categories</string>
+
+    <!-- Main Activity-->
     <string name="add_task">Add task</string>
+    <string name="task_deleted">Task was deleted.</string>
 
-    <!-- Activity New Task-->
+    <!-- New Task Activity -->
     <string name="add_title">Title</string>
     <string name="hint_task">Task…</string>
     <string name="add_description">Description</string>
@@ -22,6 +28,21 @@
     <string name="empty_not_saved">Task not saved because it is empty.</string>
     <string name="new_task_wrong_date">Wrong datetime format.</string>
     <string name="new_task_no_title">Title is missing.</string>
+
+    <!-- Category Activity-->
+    <string name="category_deleted">Category was deleted.</string>
+
+    <!-- Category Menu-->
+    <string name="menu_delete_all_categories">Delete all categories</string>
+    <string name="all_categories_deleted">All categories deleted.</string>
+
+    <!-- New Category Activity-->
+    <string name="abbr">Abbreviation</string>
+    <string name="hint_abbr">ABBR...</string>
+    <!-- Toasts-->
+    <string name="empty_not_saved_cat">Category not saved because it is empty.</string>
+    <string name="new_category_no_abbr">Abbreviation is missing.</string>
+    <string name="new_category_no_title">Title is missing.</string>
 
     <string name="action_settings">Settings</string>
 </resources>

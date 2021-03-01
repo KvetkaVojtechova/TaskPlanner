@@ -13,10 +13,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {Task.class}, version = 1, exportSchema = false)
+@Database(entities = {Task.class, Category.class/*, ToDoList.class*/}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
+    public abstract CategoryDao categoryDao();
+    //public abstract ToDoListDao toDoListDao();
 
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
@@ -43,16 +45,23 @@ public abstract class AppDatabase extends RoomDatabase {
             super.onCreate(db);
 
             databaseWriteExecutor.execute(() -> {
-                TaskDao dao = INSTANCE.taskDao();
+                TaskDao tDao = INSTANCE.taskDao();
+                CategoryDao cDao = INSTANCE.categoryDao();
 
                 Task task = new Task();
                 task.title = "Exam";
                 task.state = State.inProgress;
-                dao.insert(task);
+                tDao.insert(task);
                 task = new Task();
                 task.title = "Homework";
                 task.state = State.closed;
-                dao.insert(task);
+                tDao.insert(task);
+
+                Category category = new Category();
+                category.abbr = "BIO";
+                category.title = "Biology";
+                category.description = "Biology class";
+                cDao.insert(category);
             });
         }
     };
