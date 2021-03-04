@@ -45,7 +45,8 @@ public class EditTaskActivity extends AppCompatActivity {
         //fill out the fields with existing data
         mEditTextTitle.setText(task.title);
         mEditTextDescription.setText(task.description);
-        mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
+        if(task.dueDate != null)
+            mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
 
         //when clicked on mTextViewDueDate, invoke datetime picker and setText to mTextViewDueDate
         mTextViewDueDate.setOnClickListener(v ->
