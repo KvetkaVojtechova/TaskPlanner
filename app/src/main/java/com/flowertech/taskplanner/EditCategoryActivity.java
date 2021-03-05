@@ -59,6 +59,7 @@ public class EditCategoryActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             R.string.new_category_no_title,
                             Toast.LENGTH_LONG).show();
+                    return;
                 }
 
                 bundle.putSerializable(EDIT_CATEGORY, category);

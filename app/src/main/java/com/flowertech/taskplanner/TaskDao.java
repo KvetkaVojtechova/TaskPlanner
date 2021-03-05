@@ -26,4 +26,8 @@ public interface TaskDao {
 
     @Query("DELETE  FROM tasks")
     void deleteAll();
+
+    @Query("SELECT Tasks.Id, Tasks.Title, Tasks.Description, Tasks.due_date, Tasks.State, Tasks.category_id, Categories.abbreviation " +
+            "FROM Tasks INNER JOIN Categories ON Tasks.category_id = Categories.Id")
+    LiveData<List<TaskList>> getTaskList();
 }

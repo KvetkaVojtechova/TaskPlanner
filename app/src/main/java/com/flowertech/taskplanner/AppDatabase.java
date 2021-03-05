@@ -62,6 +62,16 @@ public abstract class AppDatabase extends RoomDatabase {
                 category.title = "Biology";
                 category.description = "Biology class";
                 cDao.insert(category);
+                category = new Category();
+                category.abbr = "MAT";
+                category.title = "Math";
+                category.description = "Math class";
+                cDao.insert(category);
+                category = new Category();
+                category.abbr = "GEO";
+                category.title = "Geography";
+                category.description = "Geography class";
+                cDao.insert(category);
             });
         }
     };

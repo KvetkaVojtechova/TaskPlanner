@@ -16,7 +16,7 @@ public class Category implements Serializable {
     }
 
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
 
     @NonNull
     public Date created;
@@ -29,4 +29,9 @@ public class Category implements Serializable {
     @NonNull
     @ColumnInfo(name = "abbreviation")
     public String abbr;
+
+    @Override
+    public String toString() {
+        return this.abbr;
+    }
 }

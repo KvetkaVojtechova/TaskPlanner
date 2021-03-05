@@ -54,6 +54,7 @@ public class NewCategoryActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             R.string.new_category_no_title,
                             Toast.LENGTH_LONG).show();
+                    return;
                 }
 
                 Bundle bundle = new Bundle();

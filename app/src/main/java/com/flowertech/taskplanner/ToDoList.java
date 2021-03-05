@@ -21,7 +21,7 @@ public class ToDoList {
     }
 
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
 
     @NonNull
     public Date created;
@@ -33,6 +33,6 @@ public class ToDoList {
     public boolean checked;
 
     @ColumnInfo(name = "task_list_id")
-    public int taskListId;
+    public Long taskListId;
 
 }

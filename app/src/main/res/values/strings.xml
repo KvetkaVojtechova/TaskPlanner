@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">TaskPlanner</string>
 
+    <string name="add">Add</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
     <!-- Main Menu-->
     <string name="menu_delete_all_tasks">Delete all tasks</string>
     <string name="all_tasks_deleted">All tasks deleted.</string>

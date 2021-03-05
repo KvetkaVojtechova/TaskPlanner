@@ -10,12 +10,12 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(tableName = "tasks"/*,
+@Entity(tableName = "tasks",
         foreignKeys = {@ForeignKey(entity = Category.class,
         parentColumns = "id",
         childColumns = "category_id",
         onDelete = ForeignKey.NO_ACTION,
-        onUpdate = ForeignKey.CASCADE)}*/)
+        onUpdate = ForeignKey.CASCADE)})
 public class Task implements Serializable {
 
     public Task() {
@@ -23,7 +23,7 @@ public class Task implements Serializable {
     }
 
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
 
     @NonNull public Date created;
 
@@ -40,7 +40,7 @@ public class Task implements Serializable {
     public Date endDate;
 
     @ColumnInfo(name = "category_id")
-    public int categoryId;
+    public Long categoryId;
 
     public Date reminder;
 
