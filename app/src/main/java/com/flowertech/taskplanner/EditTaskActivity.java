@@ -52,7 +52,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
         intent = getIntent();
         bundle = intent.getExtras();
-        task = (Task) bundle.getSerializable(EDIT_TASK);
+        Long id = bundle.getLong(EDIT_TASK);
 
         mEditTextTitle = findViewById(R.id.edit_text_title);
         mEditTextDescription = findViewById(R.id.edit_text_description);
@@ -63,12 +63,6 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         mSpinnerCategory = findViewById(R.id.spinner_category);
         final Button button = findViewById(R.id.button_save);
 
-        //fill out the fields with existing data
-        mEditTextTitle.setText(task.title);
-        mEditTextDescription.setText(task.description);
-        if(task.dueDate != null)
-            mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
-
         //when clicked on mTextViewDueDate, invoke datetime picker and setText to mTextViewDueDate
         mTextViewDueDate.setOnClickListener(v ->
                 new DateTimePicker().invoke(
@@ -78,15 +72,28 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 )
         );
 
+        //spinner category
         mSpinnerCategory.setOnItemSelectedListener(this);
 
-        mEditTaskViewModel.getAllCategories().observe(this, categoryEntities -> {
+        //get task and insert it
+        mEditTaskViewModel.getTask(id).observe(this, editTask -> {
+            task = editTask;
+            //fill out the fields with existing data
+            mEditTextTitle.setText(task.title);
+            mEditTextDescription.setText(task.description);
+            if(task.dueDate != null)
+                mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
+
+            mEditTaskViewModel.getAllCategories().observe(this, categoryEntities -> {
                 // Creating adapter for spinner
                 ArrayAdapter<Category> categoryAdapter =
                         new ArrayAdapter<Category>(this, android.R.layout.simple_spinner_item, categoryEntities);
                 //find selected category
-                Category selectedCategory = categoryEntities.stream()
-                        .filter(category -> category.id == task.categoryId).findFirst().orElse(null);
+                Category selectedCategory = null;
+                if (task.categoryId != null){
+                    selectedCategory = categoryEntities.stream()
+                            .filter(category -> category.id == task.categoryId).findFirst().orElse(null);
+                }
                 // Drop down layout style - list view with radio button
                 categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 // attaching data adapter to spinner
@@ -94,57 +101,56 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 //preselect category in spinner
                 if (selectedCategory != null)
                     mSpinnerCategory.setSelection(categoryAdapter.getPosition(selectedCategory));
-        });
+            });
 
-        mImageStateCreated.setOnClickListener(v -> {
-            mImageStateCreated.setBackgroundColor(Color.rgb(195, 236, 241));
-            mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
-            mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
-            task.state = State.created;
-        });
+            mImageStateCreated.setOnClickListener(v -> {
+                mImageStateCreated.setBackgroundColor(Color.rgb(195, 236, 241));
+                mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
+                mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
+                task.state = State.created;
+            });
 
-        mImageStateInProgress.setOnClickListener(v -> {
-            mImageStateInProgress.setBackgroundColor(Color.rgb(195, 236, 241));
-            mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
-            mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
-            task.state = State.inProgress;
-        });
+            mImageStateInProgress.setOnClickListener(v -> {
+                mImageStateInProgress.setBackgroundColor(Color.rgb(195, 236, 241));
+                mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
+                mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
+                task.state = State.inProgress;
+            });
 
-        mImageStateClosed.setOnClickListener(v -> {
-            mImageStateClosed.setBackgroundColor(Color.rgb(195, 236, 241));
-            mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
-            mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
-            task.state = State.closed;
-        });
+            mImageStateClosed.setOnClickListener(v -> {
+                mImageStateClosed.setBackgroundColor(Color.rgb(195, 236, 241));
+                mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
+                mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
+                task.state = State.closed;
+            });
 
-        //when button is clicked validate data and setResult
-        button.setOnClickListener(view -> {
-            if(TextUtils.isEmpty(mEditTextTitle.getText()) &&
-                    TextUtils.isEmpty(mEditTextDescription.getText()) &&
-                    TextUtils.isEmpty(mTextViewDueDate.getText())) {
-                setResult(RESULT_CANCELED, intent);
-            } else {
-                task.title = mEditTextTitle.getText().toString();
-                task.description = mEditTextDescription.getText().toString();
-
-                if (task.title.length() == 0){
-                    setResult(RESULT_CANCELED, intent);
-                    Toast.makeText(getApplicationContext(),
-                            R.string.new_task_no_title,
+            //when button is clicked validate data and setResult
+            button.setOnClickListener(view -> {
+                if(TextUtils.isEmpty(mEditTextTitle.getText()) &&
+                        TextUtils.isEmpty(mEditTextDescription.getText()) &&
+                        TextUtils.isEmpty(mTextViewDueDate.getText())) {
+                    Toast.makeText(
+                            this,
+                            R.string.empty_not_saved,
                             Toast.LENGTH_LONG).show();
-                    return;
+                } else {
+                    task.title = mEditTextTitle.getText().toString();
+                    task.description = mEditTextDescription.getText().toString();
+
+                    if (task.title.length() == 0){
+                        Toast.makeText(getApplicationContext(),
+                                R.string.new_task_no_title,
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    Date dueDate = DateConverters.StringToDate(mTextViewDueDate.getText().toString());
+                    task.dueDate = dueDate;
+
+                    mEditTaskViewModel.update(task);
                 }
-
-                Date dueDate = DateConverters.StringToDate(mTextViewDueDate.getText().toString());
-                task.dueDate = dueDate;
-
-                //Bundle bundle = new Bundle();
-                bundle.putSerializable(EDIT_TASK, task);
-                intent.putExtras(bundle);
-
-                setResult(RESULT_OK, intent);
-            }
-            finish();
+                finish();
+            });
         });
     }
 

@@ -36,13 +36,18 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void bind(Task task) {
+    public void bind(TaskList task) {
         mTaskTitle.setText(task.title);
         mTaskDesc.setText(task.description);
         if (task.dueDate != null) {
             String dueDate = DateConverters.DateToString(task.dueDate);
             mTaskDueDate.setText(dueDate);
         }
+
+        if (task.abbreviation != null){
+            mTaskCategory.setText(task.abbreviation);
+        }
+
         if (task.state == State.created) {
             mTaskState.setImageResource(R.drawable.ic_round_created_24);
         } else if (task.state == State.inProgress) {
@@ -50,6 +55,7 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
         } else {
             mTaskState.setImageResource(R.drawable.ic_baseline_closed_24);
         }
+
     }
 
     static TaskViewHolder create(ViewGroup parent, TaskListAdapter.OnItemClickListener listener) {

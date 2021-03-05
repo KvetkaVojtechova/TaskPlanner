@@ -52,7 +52,7 @@ public class TaskListFragment extends Fragment {
 
         mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        mTaskViewModel.getAllTasks().observe(getViewLifecycleOwner(), taskEntities -> {
+        mTaskViewModel.getAllTaskList().observe(getViewLifecycleOwner(), taskEntities -> {
             adapter.submitList(taskEntities);
         });
 
@@ -73,8 +73,13 @@ public class TaskListFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                mTaskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(v.getContext(), R.string.task_deleted, Toast.LENGTH_LONG).show();
+                TaskList taskList = adapter.getTaskAt(viewHolder.getAdapterPosition());
+                mTaskViewModel.getTask(taskList.id).observe(getViewLifecycleOwner(), task -> {
+                    if(task != null){
+                        mTaskViewModel.delete(task);
+                        Toast.makeText(v.getContext(), R.string.task_deleted, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -82,10 +87,10 @@ public class TaskListFragment extends Fragment {
         adapter.setOnItemClickListener(new TaskListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Task task = adapter.getTaskAt(position);
+                TaskList taskList = adapter.getTaskAt(position);
                 Intent intent = new Intent(v.getContext(), EditTaskActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(EditTaskActivity.EDIT_TASK, task);
+                bundle.putLong(EditTaskActivity.EDIT_TASK, taskList.id);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
             }
@@ -94,7 +99,7 @@ public class TaskListFragment extends Fragment {
         return v;
     }
 
-    //if RESULT_OK in NewTaskActivity, then insert task into TaskViewModel,
+    /*//if RESULT_OK in NewTaskActivity, then insert task into TaskViewModel,
     //else if RESULT_OK in EditTaskActivity, then update task into TaskViewModel,
     //otherwise Toast
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -114,7 +119,7 @@ public class TaskListFragment extends Fragment {
                     R.string.empty_not_saved,
                     Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
