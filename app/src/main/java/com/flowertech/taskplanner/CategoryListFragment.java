@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jetbrains.annotations.NotNull;
+
 public class CategoryListFragment extends Fragment {
     private CategoryViewModel mCategoryViewModel;
     public static final int NEW_CATEGORY_ACTIVITY_REQUEST_CODE = 1;
@@ -51,9 +53,7 @@ public class CategoryListFragment extends Fragment {
 
         mCategoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
 
-        mCategoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), categoryEntities -> {
-            adapter.submitList(categoryEntities);
-        });
+        mCategoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), categoryEntities -> adapter.submitList(categoryEntities));
 
         //when floating button is clicked, start NewCategoryActivity
         FloatingActionButton fab = v.findViewById(R.id.fab);
@@ -78,45 +78,20 @@ public class CategoryListFragment extends Fragment {
         }).attachToRecyclerView(recyclerView);
 
         //when category is clicked, start EditCategoryActivity
-        adapter.setOnItemClickListener(new CategoryListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Category category = adapter.getCategoryAt(position);
-                Intent intent = new Intent(v.getContext(), EditCategoryActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(EditCategoryActivity.EDIT_CATEGORY, category);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, EDIT_CATEGORY_ACTIVITY_REQUEST_CODE);
-            }
+        adapter.setOnItemClickListener(position -> {
+            Category category = adapter.getCategoryAt(position);
+            Intent intent = new Intent(v.getContext(), EditCategoryActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(EditCategoryActivity.EDIT_CATEGORY, category);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, EDIT_CATEGORY_ACTIVITY_REQUEST_CODE);
         });
 
         return v;
     }
 
-    //if RESULT_OK in NewCategoryActivity, then insert category into CategoryViewModel,
-    //else if RESULT_OK in EditCategoryActivity, then update category into CategoryViewModel,
-    //otherwise Toast
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_CATEGORY_ACTIVITY_REQUEST_CODE && resultCode == NewCategoryActivity.RESULT_OK) {
-            Bundle bundle = data.getExtras();
-            Category category = (Category) bundle.getSerializable(NewCategoryActivity.EXTRA_CATEGORY);
-            mCategoryViewModel.insert(category);
-        } else if(requestCode == EDIT_CATEGORY_ACTIVITY_REQUEST_CODE && resultCode == EditCategoryActivity.RESULT_OK){
-            Bundle bundle = data.getExtras();
-            Category category = (Category) bundle.getSerializable(EditCategoryActivity.EDIT_CATEGORY);
-            mCategoryViewModel.update(category);
-        } else {
-            Toast.makeText(
-                    getContext(),
-                    R.string.empty_not_saved_cat,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
