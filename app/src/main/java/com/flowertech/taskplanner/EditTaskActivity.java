@@ -1,10 +1,5 @@
 package com.flowertech.taskplanner;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,9 +16,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import java.util.Date;
-import java.util.List;
-import java.util.Observer;
 
 public class EditTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -84,7 +81,12 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             if(task.dueDate != null)
                 mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
 
+            //spinner
             mEditTaskViewModel.getAllCategories().observe(this, categoryEntities -> {
+
+                Category emptyCategory = new Category();
+                emptyCategory.abbr = "- - -";
+                categoryEntities.add(0, emptyCategory);
                 // Creating adapter for spinner
                 ArrayAdapter<Category> categoryAdapter =
                         new ArrayAdapter<Category>(this, android.R.layout.simple_spinner_item, categoryEntities);
@@ -161,7 +163,11 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Category category = (Category) parent.getSelectedItem();
-        task.categoryId = category.id;
+        if (position == 0){
+            task.categoryId = null;
+        } else {
+            task.categoryId = category.id;
+        }
     }
 
     @Override

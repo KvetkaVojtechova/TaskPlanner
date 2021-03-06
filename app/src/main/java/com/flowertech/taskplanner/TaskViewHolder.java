@@ -39,13 +39,10 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
     public void bind(TaskList task) {
         mTaskTitle.setText(task.title);
         mTaskDesc.setText(task.description);
+        mTaskCategory.setText(task.abbreviation);
         if (task.dueDate != null) {
             String dueDate = DateConverters.DateToString(task.dueDate);
             mTaskDueDate.setText(dueDate);
-        }
-
-        if (task.abbreviation != null){
-            mTaskCategory.setText(task.abbreviation);
         }
 
         if (task.state == State.created) {
