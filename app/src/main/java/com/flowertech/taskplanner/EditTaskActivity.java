@@ -81,7 +81,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             if(task.dueDate != null)
                 mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
 
-            //spinner
+            /*//spinner
             mEditTaskViewModel.getAllCategories().observe(this, categoryEntities -> {
 
                 Category emptyCategory = new Category();
@@ -103,7 +103,10 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 //preselect category in spinner
                 if (selectedCategory != null)
                     mSpinnerCategory.setSelection(categoryAdapter.getPosition(selectedCategory));
-            });
+            });*/
+
+            CategorySpinner categorySpinner = new CategorySpinner();
+            categorySpinner.createSpinner(mEditTaskViewModel, this, task, mSpinnerCategory, this);
 
             mImageStateCreated.setOnClickListener(v -> {
                 mImageStateCreated.setBackgroundColor(Color.rgb(195, 236, 241));

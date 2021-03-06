@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-public class EditTaskViewModel extends AndroidViewModel {
+public class EditTaskViewModel extends AndroidViewModel implements CategoriesProvider{
 
     private TaskRepository mTaskRepository;
     private CategoryRepository mCategoryRepository;
@@ -21,7 +21,7 @@ public class EditTaskViewModel extends AndroidViewModel {
         mAllCategories = mCategoryRepository.getAllCategories();
     }
 
-    LiveData<List<Category>> getAllCategories() {
+    public LiveData<List<Category>> getAllCategories() {
         return mAllCategories;
     }
 
