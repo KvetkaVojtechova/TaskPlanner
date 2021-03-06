@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -58,7 +57,10 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         mImageStateInProgress = findViewById(R.id.image_view_state_2);
         mImageStateClosed = findViewById(R.id.image_view_state_3);
         mSpinnerCategory = findViewById(R.id.spinner_category);
-        final Button button = findViewById(R.id.button_save);
+
+        //menu back
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
+        setTitle("Detail Task");
 
         //when clicked on mTextViewDueDate, invoke datetime picker and setText to mTextViewDueDate
         mTextViewDueDate.setOnClickListener(v ->
@@ -81,86 +83,60 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             if(task.dueDate != null)
                 mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
 
-            /*//spinner
-            mEditTaskViewModel.getAllCategories().observe(this, categoryEntities -> {
-
-                Category emptyCategory = new Category();
-                emptyCategory.abbr = "- - -";
-                categoryEntities.add(0, emptyCategory);
-                // Creating adapter for spinner
-                ArrayAdapter<Category> categoryAdapter =
-                        new ArrayAdapter<Category>(this, android.R.layout.simple_spinner_item, categoryEntities);
-                //find selected category
-                Category selectedCategory = null;
-                if (task.categoryId != null){
-                    selectedCategory = categoryEntities.stream()
-                            .filter(category -> category.id == task.categoryId).findFirst().orElse(null);
-                }
-                // Drop down layout style - list view with radio button
-                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                // attaching data adapter to spinner
-                mSpinnerCategory.setAdapter(categoryAdapter);
-                //preselect category in spinner
-                if (selectedCategory != null)
-                    mSpinnerCategory.setSelection(categoryAdapter.getPosition(selectedCategory));
-            });*/
-
             CategorySpinner categorySpinner = new CategorySpinner();
             categorySpinner.createSpinner(mEditTaskViewModel, this, task, mSpinnerCategory, this);
 
+            //created image
             mImageStateCreated.setOnClickListener(v -> {
-                mImageStateCreated.setBackgroundColor(Color.rgb(195, 236, 241));
+                mImageStateCreated.setBackgroundColor(Color.rgb(230, 230, 230));
                 mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
                 mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.created;
             });
 
+            //in progress image
             mImageStateInProgress.setOnClickListener(v -> {
-                mImageStateInProgress.setBackgroundColor(Color.rgb(195, 236, 241));
+                mImageStateInProgress.setBackgroundColor(Color.rgb(230, 230, 230));
                 mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
                 mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.inProgress;
             });
 
+            //closed image
             mImageStateClosed.setOnClickListener(v -> {
-                mImageStateClosed.setBackgroundColor(Color.rgb(195, 236, 241));
+                mImageStateClosed.setBackgroundColor(Color.rgb(230, 230, 230));
                 mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
                 mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.closed;
-            });
-
-            //when button is clicked validate data and setResult
-            button.setOnClickListener(view -> {
-                if(TextUtils.isEmpty(mEditTextTitle.getText()) &&
-                        TextUtils.isEmpty(mEditTextDescription.getText()) &&
-                        TextUtils.isEmpty(mTextViewDueDate.getText())) {
-                    Toast.makeText(
-                            this,
-                            R.string.empty_not_saved,
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    task.title = mEditTextTitle.getText().toString();
-                    task.description = mEditTextDescription.getText().toString();
-
-                    if (task.title.length() == 0){
-                        Toast.makeText(getApplicationContext(),
-                                R.string.new_task_no_title,
-                                Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-                    Date dueDate = DateConverters.StringToDate(mTextViewDueDate.getText().toString());
-                    task.dueDate = dueDate;
-
-                    mEditTaskViewModel.update(task);
-                }
-                finish();
             });
         });
     }
 
     private void saveTask() {
+        if(TextUtils.isEmpty(mEditTextTitle.getText()) &&
+                TextUtils.isEmpty(mEditTextDescription.getText()) &&
+                TextUtils.isEmpty(mTextViewDueDate.getText())) {
+            Toast.makeText(
+                    this,
+                    R.string.empty_not_saved,
+                    Toast.LENGTH_LONG).show();
+        } else {
+            task.title = mEditTextTitle.getText().toString();
+            task.description = mEditTextDescription.getText().toString();
 
+            if (task.title.length() == 0){
+                Toast.makeText(getApplicationContext(),
+                        R.string.new_task_no_title,
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Date dueDate = DateConverters.StringToDate(mTextViewDueDate.getText().toString());
+            task.dueDate = dueDate;
+
+            mEditTaskViewModel.update(task);
+        }
+        finish();
     }
 
     @Override

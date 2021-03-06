@@ -6,4 +6,5 @@
     <color name="buttonLabel">#FFFFFF</color>
     <color name="blueGray">#6091B8</color>
     <color name="pastel_turquoise">#C3ECF1</color>
+    <color name="light_gray">#E6E6E6</color>
 </resources>

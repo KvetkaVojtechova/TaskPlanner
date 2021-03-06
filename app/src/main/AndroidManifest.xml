@@ -11,7 +11,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".EditCategoryActivity"></activity>
         <activity android:name=".NewCategoryActivity" />
-        <activity android:name=".EditTaskActivity" />
+        <activity android:name=".EditTaskActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".NewTaskActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

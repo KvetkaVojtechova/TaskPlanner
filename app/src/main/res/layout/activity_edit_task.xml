@@ -1,143 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp"
     tools:context=".EditTaskActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="100dp"/>
-
-    <EditText
-        android:id="@+id/edit_text_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hint_task"
-        android:inputType="textCapSentences"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_description"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
-
-    <EditText
-        android:id="@+id/edit_text_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hint_description"
-        android:inputType="textMultiLine"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/category"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
-
-    <Spinner
-        android:id="@+id/spinner_category"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_date"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
-
-    <TextView
-        android:id="@+id/edit_text_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:hint="@string/hint_date"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/set_reminder"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/text_view_state"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/choose_state"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp">
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="100dp"/>
 
-        <ImageView
-            android:id="@+id/image_view_state_1"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginRight="30dp"
-            android:src="@drawable/ic_round_created_24"
-            />
+        <EditText
+            android:id="@+id/edit_text_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_task"
+            android:inputType="textCapSentences"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"/>
 
-        <ImageView
-            android:id="@+id/image_view_state_2"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginRight="30dp"
-            android:src="@drawable/ic_baseline_in_progress_24"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-        <ImageView
-            android:id="@+id/image_view_state_3"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_baseline_closed_24"/>
+        <EditText
+            android:id="@+id/edit_text_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_description"
+            android:inputType="textMultiLine"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/category"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <Spinner
+            android:id="@+id/spinner_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_date"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/edit_text_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/hint_date"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_reminder"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/text_view_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_state"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/image_view_state_1"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginRight="30dp"
+                android:src="@drawable/ic_round_created_24"
+                />
+
+            <ImageView
+                android:id="@+id/image_view_state_2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginRight="30dp"
+                android:src="@drawable/ic_baseline_in_progress_24"/>
+
+            <ImageView
+                android:id="@+id/image_view_state_3"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_baseline_closed_24"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="100dp"
-        android:layout_marginLeft="100dp"
-        android:background="#6091B8"
-        android:text="@string/button_save"
-        android:textColor="@color/buttonLabel"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-</LinearLayout>
+</ScrollView>
