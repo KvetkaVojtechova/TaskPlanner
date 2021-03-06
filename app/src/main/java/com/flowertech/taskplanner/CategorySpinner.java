@@ -16,9 +16,12 @@ public class CategorySpinner {
 
         categoriesProvider.getAllCategories().observe(lifecycleOwner, categoryEntities -> {
 
-            Category emptyCategory = new Category();
-            emptyCategory.abbr = "- - -";
-            categoryEntities.add(0, emptyCategory);
+            if (categoryEntities.get(0).abbr != "- - -"){
+                Category emptyCategory = new Category();
+                emptyCategory.abbr = "- - -";
+                categoryEntities.add(0, emptyCategory);
+            }
+
             // Creating adapter for spinner
             ArrayAdapter<Category> categoryAdapter =
                     new ArrayAdapter<Category>(context, android.R.layout.simple_spinner_item, categoryEntities);

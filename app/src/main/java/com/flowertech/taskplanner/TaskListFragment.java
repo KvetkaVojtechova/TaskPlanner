@@ -99,28 +99,6 @@ public class TaskListFragment extends Fragment {
         return v;
     }
 
-    /*//if RESULT_OK in NewTaskActivity, then insert task into TaskViewModel,
-    //else if RESULT_OK in EditTaskActivity, then update task into TaskViewModel,
-    //otherwise Toast
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_TASK_ACTIVITY_REQUEST_CODE && resultCode == NewTaskActivity.RESULT_OK) {
-            Bundle bundle = data.getExtras();
-            Task task = (Task) bundle.getSerializable(NewTaskActivity.EXTRA_TASK);
-            mTaskViewModel.insert(task);
-        } else if(requestCode == EDIT_TASK_ACTIVITY_REQUEST_CODE && resultCode == EditTaskActivity.RESULT_OK){
-            Bundle bundle = data.getExtras();
-            Task task = (Task) bundle.getSerializable(EditTaskActivity.EDIT_TASK);
-            mTaskViewModel.update(task);
-        } else {
-            Toast.makeText(
-                    getContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
-        }
-    }*/
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
