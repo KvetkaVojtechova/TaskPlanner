@@ -43,6 +43,8 @@ class TaskViewHolder extends RecyclerView.ViewHolder {
         if (task.dueDate != null) {
             String dueDate = DateConverters.DateToString(task.dueDate);
             mTaskDueDate.setText(dueDate);
+        } else {
+            mTaskDueDate.setText("");
         }
 
         if (task.state == State.created) {

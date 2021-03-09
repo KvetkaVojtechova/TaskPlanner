@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -26,6 +25,9 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     public static final String EDIT_TASK =
             "com.flowertech.tasklistsql.EDIT_TASK";
 
+    private TextView mTextViewCreated;
+    private TextView mTextViewInProgress;
+    private TextView mTextViewFinished;
     private EditText mEditTextTitle;
     private EditText mEditTextDescription;
     private TextView mTextViewDueDate;
@@ -36,8 +38,6 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     private EditTaskViewModel mEditTaskViewModel;
 
     private Task task;
-    private Intent intent;
-    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +46,13 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
         mEditTaskViewModel = new ViewModelProvider(this).get(EditTaskViewModel.class);
 
-        intent = getIntent();
-        bundle = intent.getExtras();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
         Long id = bundle.getLong(EDIT_TASK);
 
+        mTextViewCreated = findViewById(R.id.text_view_created);
+        mTextViewInProgress = findViewById(R.id.text_view_in_progress);
+        mTextViewFinished = findViewById(R.id.text_view_finished);
         mEditTextTitle = findViewById(R.id.edit_text_title);
         mEditTextDescription = findViewById(R.id.edit_text_description);
         mTextViewDueDate = findViewById(R.id.edit_text_date);
@@ -82,6 +85,12 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             mEditTextDescription.setText(task.description);
             if(task.dueDate != null)
                 mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
+            mTextViewCreated.setText("Created: " + DateConverters.DateToString(task.created));
+            if (task.startDate != null)
+                mTextViewInProgress.setText("In Progress: " + DateConverters.DateToString(task.startDate));
+            if (task.endDate != null)
+                mTextViewFinished.setText("Finished: " + DateConverters.DateToString(task.endDate));
+
 
             CategorySpinner categorySpinner = new CategorySpinner();
             categorySpinner.createSpinner(mEditTaskViewModel, this, task, mSpinnerCategory, this);
@@ -92,6 +101,8 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
                 mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.created;
+                task.startDate = null;
+                task.endDate = null;
             });
 
             //in progress image
@@ -100,6 +111,8 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
                 mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.inProgress;
+                task.startDate = new Date();
+                task.endDate = null;
             });
 
             //closed image
@@ -108,6 +121,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
                 mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.closed;
+                task.endDate = new Date();
             });
         });
     }

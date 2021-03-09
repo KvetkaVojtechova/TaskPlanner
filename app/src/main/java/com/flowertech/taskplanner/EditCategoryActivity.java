@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ public class EditCategoryActivity extends AppCompatActivity {
     public static final String EDIT_CATEGORY =
             "com.flowertech.categorylistsql.EDIT_CATEGORY";
 
+    private TextView mTextViewCreated;
     private EditText mEditTextAbbr;
     private EditText mEditTextTitle;
     private EditText mEditTextDescription;
@@ -34,6 +36,7 @@ public class EditCategoryActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         category = (Category) bundle.getSerializable(EDIT_CATEGORY);
 
+        mTextViewCreated = findViewById(R.id.text_view_created);
         mEditTextAbbr = findViewById(R.id.edit_text_abbr);
         mEditTextTitle = findViewById(R.id.edit_text_title);
         mEditTextDescription = findViewById(R.id.edit_text_description);
@@ -43,6 +46,7 @@ public class EditCategoryActivity extends AppCompatActivity {
         setTitle("Detail Category");
 
         //fill out the fields with existing data
+        mTextViewCreated.setText("Created: " + DateConverters.DateToString(category.created));
         mEditTextAbbr.setText(category.abbr);
         mEditTextTitle.setText(category.title);
         mEditTextDescription.setText(category.description);

@@ -12,6 +12,14 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/text_view_created"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Created: "
+            android:layout_gravity="right"
+            android:paddingRight="10dp"/>
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/abbr"
@@ -25,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_abbr"
+            android:maxLength="5"
             android:inputType="textCapCharacters"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
