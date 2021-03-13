@@ -17,8 +17,11 @@
     <string name="categories_page">Categories</string>
 
     <!-- Main Activity-->
+    <!-- Task List Fragment-->
     <string name="add_task">Add task</string>
     <string name="task_deleted">Task was deleted.</string>
+    <string name="alert_delete_title">Delete all task</string>
+    <string name="alert_delete_message">Do you want to delete all tasks?</string>
 
     <!-- New Task Activity -->
     <string name="add_title">Title</string>

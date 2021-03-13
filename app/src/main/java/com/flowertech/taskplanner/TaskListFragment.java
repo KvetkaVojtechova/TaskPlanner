@@ -1,6 +1,8 @@
 package com.flowertech.taskplanner;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -132,8 +134,15 @@ public class TaskListFragment extends Fragment {
         boolean ret;
         switch (item.getItemId()) {
             case R.id.delete_all_tasks:
-                mTaskViewModel.deleteAllTasks();
-                Toast.makeText(getContext(), R.string.all_tasks_deleted, Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.alert_delete_title);
+                builder.setMessage(R.string.alert_delete_message);
+                builder.setPositiveButton("Yes", (dialog, which) -> {
+                    mTaskViewModel.deleteAllTasks();
+                    Toast.makeText(getContext(), R.string.all_tasks_deleted, Toast.LENGTH_SHORT).show();
+                });
+                builder.setNegativeButton("No", null);
+                builder.show();
                 ret = true;
                 break;
             case R.id.show_created:
