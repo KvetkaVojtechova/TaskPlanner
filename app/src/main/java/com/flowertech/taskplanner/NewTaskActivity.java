@@ -48,6 +48,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
+
         setTitle("New Task");
 
         //when clicked on mTextViewDueDate, invoke datetime picker and setText to mTextViewDueDate

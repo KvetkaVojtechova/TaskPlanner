@@ -1,9 +1,12 @@
 package com.flowertech.taskplanner;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MenuCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -27,9 +30,12 @@ public class TaskListFragment extends Fragment {
     private final TaskListAdapter adapter = new TaskListAdapter(new TaskListAdapter.TaskDiff());
     public static final int NEW_TASK_ACTIVITY_REQUEST_CODE = 1;
     public static final int EDIT_TASK_ACTIVITY_REQUEST_CODE = 2;
-    private boolean isCreatedChecked = false;
-    private boolean isInProgressChecked = false;
-    private boolean isClosedChecked = false;
+    public static final String SHARED_PREF_CREATED = "createdKey";
+    public static final String SHARED_PREF_IN_PROGRESS = "inProgressKey";
+    public static final String SHARED_PREF_CLOSED = "closedKey";
+    private boolean isCreatedChecked;
+    private boolean isInProgressChecked;
+    private boolean isClosedChecked;
 
     public TaskListFragment() {
         // Required empty public constructor
@@ -46,6 +52,12 @@ public class TaskListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_task_list, container, false);
+
+        //get settings from shared preferences
+        SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        isCreatedChecked = pref.getBoolean(SHARED_PREF_CREATED, true);
+        isInProgressChecked = pref.getBoolean(SHARED_PREF_IN_PROGRESS, true);
+        isClosedChecked = pref.getBoolean(SHARED_PREF_CLOSED, false);
 
         //Initialize and assign variable
         RecyclerView recyclerView = v.findViewById(R.id.recycler_view);
@@ -103,6 +115,15 @@ public class TaskListFragment extends Fragment {
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+        MenuCompat.setGroupDividerEnabled(menu, true);
+
+        MenuItem createdMenuItem = menu.findItem(R.id.show_created);
+        createdMenuItem.setChecked(isCreatedChecked);
+        MenuItem inProgressMenuItem = menu.findItem(R.id.show_in_progress);
+        inProgressMenuItem.setChecked(isInProgressChecked);
+        MenuItem closedMenuItem = menu.findItem(R.id.show_closed);
+        closedMenuItem.setChecked(isClosedChecked);
     }
 
     //put deleteAllTasks into menu
@@ -152,6 +173,12 @@ public class TaskListFragment extends Fragment {
                 ret = super.onOptionsItemSelected(item);
                 break;
         }
+        SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putBoolean(SHARED_PREF_CREATED, isCreatedChecked);
+        edit.putBoolean(SHARED_PREF_IN_PROGRESS, isInProgressChecked);
+        edit.putBoolean(SHARED_PREF_CLOSED, isClosedChecked);
+        edit.apply();
         mTaskViewModel.filterTaskList(isCreatedChecked, isInProgressChecked, isClosedChecked).observe(getViewLifecycleOwner(), adapter::submitList);
         return ret;
     }
