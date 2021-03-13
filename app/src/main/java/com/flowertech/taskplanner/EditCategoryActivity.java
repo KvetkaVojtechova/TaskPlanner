@@ -36,6 +36,8 @@ public class EditCategoryActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         category = (Category) bundle.getSerializable(EDIT_CATEGORY);
 
+        String created = getResources().getString(R.string.date_created);
+
         mTextViewCreated = findViewById(R.id.text_view_created);
         mEditTextAbbr = findViewById(R.id.edit_text_abbr);
         mEditTextTitle = findViewById(R.id.edit_text_title);
@@ -43,10 +45,10 @@ public class EditCategoryActivity extends AppCompatActivity {
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
-        setTitle("Detail Category");
+        setTitle(R.string.activity_edit_category_title);
 
         //fill out the fields with existing data
-        mTextViewCreated.setText("Created: " + DateConverters.DateToString(category.created));
+        mTextViewCreated.setText(created + DateConverters.DateToString(category.created));
         mEditTextAbbr.setText(category.abbr);
         mEditTextTitle.setText(category.title);
         mEditTextDescription.setText(category.description);

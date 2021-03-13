@@ -31,7 +31,7 @@ public class NewCategoryActivity extends AppCompatActivity {
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
-        setTitle("New Category");
+        setTitle(R.string.activity_new_category_title);
     }
 
     private void addCategory(){

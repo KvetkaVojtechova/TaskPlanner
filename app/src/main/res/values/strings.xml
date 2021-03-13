@@ -24,6 +24,8 @@
     <string name="alert_delete_message">Do you want to delete all tasks?</string>
 
     <!-- New Task Activity -->
+    <string name="activity_new_task_title">New Task</string>
+    <string name="activity_edit_task_title">Detail Task</string>
     <string name="add_title">Title</string>
     <string name="hint_task">Task…</string>
     <string name="add_description">Description</string>
@@ -47,6 +49,8 @@
     <string name="all_categories_deleted">All categories deleted.</string>
 
     <!-- New Category Activity-->
+    <string name="activity_new_category_title">New Category</string>
+    <string name="activity_edit_category_title">Detail Category</string>
     <string name="abbr">Abbreviation</string>
     <string name="hint_abbr">ABBR...</string>
     <!-- Toasts-->
@@ -54,10 +58,13 @@
     <string name="new_category_no_abbr">Abbreviation is missing.</string>
     <string name="new_category_no_title">Title is missing.</string>
 
-    <string name="action_settings">Settings</string>
-
     <!-- Notification-->
     <string name="channel_name">My notification</string>
     <string name="channel_description">Description</string>
+
+    <!-- Edit Task and Category dates-->
+    <string name="date_created">Created: </string>
+    <string name="date_in_progress">In Progress: </string>
+    <string name="date_closed">Finished: </string>
 
 </resources>

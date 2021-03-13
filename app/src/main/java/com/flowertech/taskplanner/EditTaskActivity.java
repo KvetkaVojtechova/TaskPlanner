@@ -50,6 +50,10 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         Bundle bundle = intent.getExtras();
         Long id = bundle.getLong(EDIT_TASK);
 
+        String created = getResources().getString(R.string.date_created);
+        String inProgress = getResources().getString(R.string.date_in_progress);
+        String closed = getResources().getString(R.string.date_closed);
+
         mTextViewCreated = findViewById(R.id.text_view_created);
         mTextViewInProgress = findViewById(R.id.text_view_in_progress);
         mTextViewFinished = findViewById(R.id.text_view_finished);
@@ -63,7 +67,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
-        setTitle("Detail Task");
+        setTitle(R.string.activity_edit_task_title);
 
         //when clicked on mTextViewDueDate, invoke datetime picker and setText to mTextViewDueDate
         mTextViewDueDate.setOnClickListener(v ->
@@ -85,11 +89,11 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             mEditTextDescription.setText(task.description);
             if(task.dueDate != null)
                 mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
-            mTextViewCreated.setText("Created: " + DateConverters.DateToString(task.created));
+            mTextViewCreated.setText(created + DateConverters.DateToString(task.created));
             if (task.startDate != null)
-                mTextViewInProgress.setText("In Progress: " + DateConverters.DateToString(task.startDate));
+                mTextViewInProgress.setText(inProgress + DateConverters.DateToString(task.startDate));
             if (task.endDate != null)
-                mTextViewFinished.setText("Finished: " + DateConverters.DateToString(task.endDate));
+                mTextViewFinished.setText(closed + DateConverters.DateToString(task.endDate));
 
 
             CategorySpinner categorySpinner = new CategorySpinner();
