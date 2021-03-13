@@ -8,6 +8,9 @@
     <!-- Main Menu-->
     <string name="menu_delete_all_tasks">Delete all tasks</string>
     <string name="all_tasks_deleted">All tasks deleted.</string>
+    <string name="show_created">Show created tasks.</string>
+    <string name="show_in_progress">Show in progress tasks.</string>
+    <string name="show_closed">Show finished tasks.</string>
 
     <!-- Bottom Navigation Menu-->
     <string name="tasks_page">Tasks</string>
@@ -49,5 +52,9 @@
     <string name="new_category_no_title">Title is missing.</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- Notification-->
+    <string name="channel_name">My notification</string>
+    <string name="channel_description">Description</string>
 
 </resources>

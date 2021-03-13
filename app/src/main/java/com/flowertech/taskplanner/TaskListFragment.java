@@ -20,10 +20,16 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jetbrains.annotations.NotNull;
+
 public class TaskListFragment extends Fragment {
     private TaskViewModel mTaskViewModel;
+    private final TaskListAdapter adapter = new TaskListAdapter(new TaskListAdapter.TaskDiff());
     public static final int NEW_TASK_ACTIVITY_REQUEST_CODE = 1;
     public static final int EDIT_TASK_ACTIVITY_REQUEST_CODE = 2;
+    private boolean isCreatedChecked = false;
+    private boolean isInProgressChecked = false;
+    private boolean isClosedChecked = false;
 
     public TaskListFragment() {
         // Required empty public constructor
@@ -46,15 +52,12 @@ public class TaskListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
         recyclerView.setHasFixedSize(true);
 
-        final TaskListAdapter adapter = new TaskListAdapter(new TaskListAdapter.TaskDiff());
         //set adapter to recyclerview
         recyclerView.setAdapter(adapter);
 
         mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        mTaskViewModel.getAllTaskList().observe(getViewLifecycleOwner(), taskEntities -> {
-            adapter.submitList(taskEntities);
-        });
+        mTaskViewModel.filterTaskList(isCreatedChecked, isInProgressChecked, isClosedChecked).observe(getViewLifecycleOwner(), adapter::submitList);
 
         //when floating button is clicked, start NewTaskActivity
         FloatingActionButton fab = v.findViewById(R.id.fab);
@@ -84,23 +87,20 @@ public class TaskListFragment extends Fragment {
         }).attachToRecyclerView(recyclerView);
 
         //when task is clicked, start EditTaskActivity
-        adapter.setOnItemClickListener(new TaskListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                TaskList taskList = adapter.getTaskAt(position);
-                Intent intent = new Intent(v.getContext(), EditTaskActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putLong(EditTaskActivity.EDIT_TASK, taskList.id);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
-            }
+        adapter.setOnItemClickListener(position -> {
+            TaskList taskList = adapter.getTaskAt(position);
+            Intent intent = new Intent(v.getContext(), EditTaskActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putLong(EditTaskActivity.EDIT_TASK, taskList.id);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
         });
 
         return v;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -108,13 +108,51 @@ public class TaskListFragment extends Fragment {
     //put deleteAllTasks into menu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        boolean ret;
         switch (item.getItemId()) {
             case R.id.delete_all_tasks:
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getContext(), R.string.all_tasks_deleted, Toast.LENGTH_SHORT).show();
-                return true;
+                ret = true;
+                break;
+            case R.id.show_created:
+                if (item.isChecked()){
+                    item.setChecked(false);
+                    isCreatedChecked = false;
+                }
+                else {
+                    item.setChecked(true);
+                    isCreatedChecked = true;
+                }
+                ret = true;
+                break;
+            case R.id.show_in_progress:
+                if (item.isChecked()){
+                    item.setChecked(false);
+                    isInProgressChecked = false;
+                }
+                else {
+                    item.setChecked(true);
+                    isInProgressChecked = true;
+                }
+                ret = true;
+                break;
+            case R.id.show_closed:
+                if (item.isChecked()){
+                    item.setChecked(false);
+                    isClosedChecked = false;
+                }
+                else {
+                    item.setChecked(true);
+                    isClosedChecked = true;
+                }
+                ret = true;
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                ret = super.onOptionsItemSelected(item);
+                break;
         }
+        mTaskViewModel.filterTaskList(isCreatedChecked, isInProgressChecked, isClosedChecked).observe(getViewLifecycleOwner(), adapter::submitList);
+        return ret;
     }
 }

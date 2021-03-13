@@ -5,4 +5,17 @@
         android:id="@+id/delete_all_tasks"
         android:title="@string/menu_delete_all_tasks"
         app:showAsAction="never"/>
+
+    <group android:checkableBehavior="all" >
+    <item
+        android:id="@+id/show_created"
+        android:title="@string/show_created" />
+
+    <item
+        android:id="@+id/show_in_progress"
+        android:title="@string/show_in_progress" />
+    <item
+        android:id="@+id/show_closed"
+        android:title="@string/show_closed"/>
+    </group>
 </menu>

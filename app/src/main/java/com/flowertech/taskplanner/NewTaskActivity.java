@@ -1,8 +1,8 @@
 package com.flowertech.taskplanner;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,22 +11,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Date;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 public class NewTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
-
-    public static final String EXTRA_TASK =
-            "com.flowertech.tasklistsql.EXTRA_TASK";
 
     private EditText mEditTextTitle;
     private EditText mEditTextDescription;
     private TextView mTextViewDueDate;
+    private TextView mTextViewReminder;
     private Spinner mSpinnerCategory;
     private NewTaskViewModel mNewTaskViewModel;
     private Task task;
@@ -44,6 +44,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         mEditTextDescription = findViewById(R.id.edit_text_description);
         mTextViewDueDate = findViewById(R.id.edit_text_date);
         mSpinnerCategory = findViewById(R.id.spinner_category);
+        mTextViewReminder = findViewById(R.id.edit_text_reminder);
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
@@ -55,6 +56,15 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                         NewTaskActivity.this,
                         (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) ->
                                 mTextViewDueDate.setText(selectedDay + "." + selectedMonth + "." + selectedYear + " " + selectedHour + ":" + selectedMinute)
+                )
+        );
+
+        //when clicked on mTextViewReminder, invoke datetime picker and setText to mTextViewReminder
+        mTextViewReminder.setOnClickListener(v ->
+                new DateTimePicker().invoke(
+                        NewTaskActivity.this,
+                        (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) ->
+                                mTextViewReminder.setText(selectedDay + "." + selectedMonth + "." + selectedYear + " " + selectedHour + ":" + selectedMinute)
                 )
         );
 
@@ -86,8 +96,10 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                 return;
             }
 
-            Date dueDate = DateConverters.StringToDate(mTextViewDueDate.getText().toString());
-            task.dueDate = dueDate;
+            task.dueDate = DateConverters.StringToDate(mTextViewDueDate.getText().toString());
+            task.reminder = DateConverters.StringToDate(mTextViewReminder.getText().toString());
+
+            scheduleNotification(this, 5000, 5);
 
             mNewTaskViewModel.insert(task);
         }
@@ -123,5 +135,24 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void scheduleNotification(Context context, long delay, int notificationId) {
+        //delay is after how much time(in millis) from current time you want to schedule the notification
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent activity = PendingIntent.getActivity(context, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher_task_planner)
+                .setContentTitle(task.title)
+                .setContentText("Hello World!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(activity);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+        Notification notification = builder.build();
+        notificationManager.notify(notificationId, notification);
+
     }
 }
