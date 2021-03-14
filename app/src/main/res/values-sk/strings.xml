@@ -41,6 +41,9 @@
     <string name="empty_not_saved">Úloha nebola uložená, lebo je prázdna.</string>
     <string name="new_task_wrong_date">Zlý formát dátumu a času.</string>
     <string name="new_task_no_title">Názov nie je zadaný.</string>
+    <string name="wrong_date">Dátum a čas musia byť väčšie ako teraz.</string>
+    <string name="wrong_date_reminder">Dátum a čas musia byť menšie ako termín ukončenia.</string>
+    <string name="reminder_cannot_set">Termín ukončenia musí byť nastavený.</string>
 
     <!-- Category Activity-->
     <string name="category_deleted">Kategória bola odstránená.</string>

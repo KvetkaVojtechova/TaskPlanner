@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class DateTimePicker {
     private int selectedYear;
@@ -13,8 +14,11 @@ public class DateTimePicker {
     private int selectedHour;
     private int selectedMinute;
 
-    public void invoke(Activity activity, OnDateTimePicked onPick) {
+    public void invoke(Activity activity, OnDateTimePicked onPick, Date initialDate) {
         Calendar calendar = Calendar.getInstance();
+
+        if (initialDate != null)
+            calendar.setTime(initialDate);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(activity, (view, hourOfDay, minute) -> {
             selectedHour = hourOfDay;
@@ -30,6 +34,9 @@ public class DateTimePicker {
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         datePickerDialog.show();
+
+        // disable dates before today
+        datePickerDialog.getDatePicker().setMinDate(calendar.getTime().getTime());
     }
 
     interface OnDateTimePicked {

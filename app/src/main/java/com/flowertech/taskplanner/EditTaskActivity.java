@@ -74,7 +74,8 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 new DateTimePicker().invoke(
                         EditTaskActivity.this,
                         (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) ->
-                                mTextViewDueDate.setText(selectedDay + "." + selectedMonth + "." + selectedYear + " " + selectedHour + ":" + selectedMinute)
+                                mTextViewDueDate.setText(selectedDay + "." + selectedMonth + "." + selectedYear + " " + selectedHour + ":" + selectedMinute),
+                        null
                 )
         );
 

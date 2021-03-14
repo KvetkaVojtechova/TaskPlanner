@@ -25,7 +25,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Calendar;
-import java.util.Formatter;
 
 public class NewTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -37,6 +36,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
     private NewTaskViewModel mNewTaskViewModel;
     private Task task;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,26 +64,56 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                         (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) -> {
                             Calendar c = Calendar.getInstance();
                             c.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-                            task.dueDate = c.getTime();
-                            mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
-                        }
+                            if ((c.getTimeInMillis() - System.currentTimeMillis()) > 0){
+                                task.dueDate = c.getTime();
+                                mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
+                            } else {
+                                Toast.makeText(
+                                        this,
+                                        R.string.wrong_date,
+                                        Toast.LENGTH_LONG).show();
+                            }
+
+                        }, null
                 )
         );
 
         //when clicked on mTextViewReminder, invoke datetime picker and setText to mTextViewReminder
-        mTextViewReminder.setOnClickListener(v ->
+        mTextViewReminder.setOnClickListener(v -> {
+                if(task.dueDate == null){
+                    Toast.makeText(
+                            this,
+                            R.string.reminder_cannot_set,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
                 new DateTimePicker().invoke(
                         NewTaskActivity.this,
                         (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) -> {
-
                             Calendar c = Calendar.getInstance();
                             c.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-                            task.reminder = c.getTime();
-                            mTextViewReminder.setText(DateConverters.DateToString(task.reminder));
-                        }
+                            if ((c.getTimeInMillis() - System.currentTimeMillis()) > 0){
+                                if ((task.dueDate.toInstant().toEpochMilli() - c.getTimeInMillis()) > 0){
+                                    task.reminder = c.getTime();
+                                    mTextViewReminder.setText(DateConverters.DateToString(task.reminder));
+                                } else {
+                                    Toast.makeText(
+                                            this,
+                                            R.string.wrong_date_reminder,
+                                            Toast.LENGTH_LONG).show();
+                                }
 
-                )
-        );
+                            } else {
+                                Toast.makeText(
+                                        this,
+                                        R.string.wrong_date,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }, task.dueDate
+                );
+        });
+
+
 
         //spinner category
         mSpinnerCategory.setOnItemSelectedListener(this);

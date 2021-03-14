@@ -41,6 +41,9 @@
     <string name="empty_not_saved">Task not saved because it is empty.</string>
     <string name="new_task_wrong_date">Wrong datetime format.</string>
     <string name="new_task_no_title">Title is missing.</string>
+    <string name="wrong_date">Date and time must be bigger than current date and time.</string>
+    <string name="wrong_date_reminder">Date and time must be less than due date time.</string>
+    <string name="reminder_cannot_set">Due date must be set.</string>
 
     <!-- Category Activity-->
     <string name="category_deleted">Category was deleted.</string>
