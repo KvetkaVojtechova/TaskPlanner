@@ -34,9 +34,6 @@ public class DateTimePicker {
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         datePickerDialog.show();
-
-        // disable dates before today
-        datePickerDialog.getDatePicker().setMinDate(calendar.getTime().getTime());
     }
 
     interface OnDateTimePicked {

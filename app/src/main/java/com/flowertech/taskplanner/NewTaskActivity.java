@@ -24,15 +24,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.Calendar;
-
 public class NewTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private EditText mEditTextTitle;
     private EditText mEditTextDescription;
     private TextView mTextViewDueDate;
     private TextView mTextViewReminder;
-    private Spinner mSpinnerCategory;
     private NewTaskViewModel mNewTaskViewModel;
     private Task task;
 
@@ -43,13 +40,14 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         setContentView(R.layout.activity_new_task);
 
         mNewTaskViewModel = new ViewModelProvider(this).get(NewTaskViewModel.class);
+        CalendarsProvider calendarsProvider = new CalendarsProvider();
 
         task = new Task();
 
         mEditTextTitle = findViewById(R.id.edit_text_title);
         mEditTextDescription = findViewById(R.id.edit_text_description);
         mTextViewDueDate = findViewById(R.id.edit_text_date);
-        mSpinnerCategory = findViewById(R.id.spinner_category);
+        Spinner mSpinnerCategory = findViewById(R.id.spinner_category);
         mTextViewReminder = findViewById(R.id.edit_text_reminder);
 
         //menu back
@@ -59,59 +57,13 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
 
         //when clicked on mTextViewDueDate, invoke datetime picker and setText to mTextViewDueDate
         mTextViewDueDate.setOnClickListener(v ->
-                new DateTimePicker().invoke(
-                        NewTaskActivity.this,
-                        (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) -> {
-                            Calendar c = Calendar.getInstance();
-                            c.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-                            if ((c.getTimeInMillis() - System.currentTimeMillis()) > 0){
-                                task.dueDate = c.getTime();
-                                mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
-                            } else {
-                                Toast.makeText(
-                                        this,
-                                        R.string.wrong_date,
-                                        Toast.LENGTH_LONG).show();
-                            }
-
-                        }, null
-                )
+                calendarsProvider.setDueDate(this, task, mTextViewDueDate, mTextViewReminder, NewTaskActivity.this)
         );
 
         //when clicked on mTextViewReminder, invoke datetime picker and setText to mTextViewReminder
-        mTextViewReminder.setOnClickListener(v -> {
-                if(task.dueDate == null){
-                    Toast.makeText(
-                            this,
-                            R.string.reminder_cannot_set,
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                new DateTimePicker().invoke(
-                        NewTaskActivity.this,
-                        (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) -> {
-                            Calendar c = Calendar.getInstance();
-                            c.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-                            if ((c.getTimeInMillis() - System.currentTimeMillis()) > 0){
-                                if ((task.dueDate.toInstant().toEpochMilli() - c.getTimeInMillis()) > 0){
-                                    task.reminder = c.getTime();
-                                    mTextViewReminder.setText(DateConverters.DateToString(task.reminder));
-                                } else {
-                                    Toast.makeText(
-                                            this,
-                                            R.string.wrong_date_reminder,
-                                            Toast.LENGTH_LONG).show();
-                                }
-
-                            } else {
-                                Toast.makeText(
-                                        this,
-                                        R.string.wrong_date,
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        }, task.dueDate
-                );
-        });
+        mTextViewReminder.setOnClickListener(v ->
+                calendarsProvider.setReminder(this, task, mTextViewReminder, NewTaskActivity.this)
+        );
 
 
 
@@ -145,7 +97,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
             }
 
             if (task.reminder != null){
-                Long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
+                long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
                 scheduleNotification(this, difference, (int)task.id);
             }
 
@@ -177,18 +129,17 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_task:
-                addTask();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.add_task) {
+            addTask();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public void scheduleNotification(Context context, long delay, int notificationId) {
         //delay is after how much time(in millis) from current time you want to schedule the notification
 
+        //creates a notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_task_planner)
                 .setContentTitle(task.title)
