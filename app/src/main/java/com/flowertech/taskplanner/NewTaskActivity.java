@@ -1,10 +1,13 @@
 package com.flowertech.taskplanner;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,10 +19,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.ViewModelProvider;
+
+import java.util.Calendar;
+import java.util.Formatter;
 
 public class NewTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -55,8 +61,12 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         mTextViewDueDate.setOnClickListener(v ->
                 new DateTimePicker().invoke(
                         NewTaskActivity.this,
-                        (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) ->
-                                mTextViewDueDate.setText(selectedDay + "." + selectedMonth + "." + selectedYear + " " + selectedHour + ":" + selectedMinute)
+                        (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) -> {
+                            Calendar c = Calendar.getInstance();
+                            c.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
+                            task.dueDate = c.getTime();
+                            mTextViewDueDate.setText(DateConverters.DateToString(task.dueDate));
+                        }
                 )
         );
 
@@ -64,8 +74,14 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         mTextViewReminder.setOnClickListener(v ->
                 new DateTimePicker().invoke(
                         NewTaskActivity.this,
-                        (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) ->
-                                mTextViewReminder.setText(selectedDay + "." + selectedMonth + "." + selectedYear + " " + selectedHour + ":" + selectedMinute)
+                        (selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute) -> {
+
+                            Calendar c = Calendar.getInstance();
+                            c.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
+                            task.reminder = c.getTime();
+                            mTextViewReminder.setText(DateConverters.DateToString(task.reminder));
+                        }
+
                 )
         );
 
@@ -76,6 +92,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         categorySpinner.createSpinner(mNewTaskViewModel, this, task, mSpinnerCategory, this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void addTask() {
         //validate inputs
         if(TextUtils.isEmpty(mEditTextTitle.getText()) &&
@@ -97,10 +114,10 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                 return;
             }
 
-            task.dueDate = DateConverters.StringToDate(mTextViewDueDate.getText().toString());
-            task.reminder = DateConverters.StringToDate(mTextViewReminder.getText().toString());
-
-            scheduleNotification(this, 5000, 5);
+            if (task.reminder != null){
+                Long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
+                scheduleNotification(this, difference, (int)task.id);
+            }
 
             mNewTaskViewModel.insert(task);
         }
@@ -127,6 +144,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         menuInflater.inflate(R.menu.add_task_menu, menu);
         return true;
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -140,20 +158,27 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
 
     public void scheduleNotification(Context context, long delay, int notificationId) {
         //delay is after how much time(in millis) from current time you want to schedule the notification
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent activity = PendingIntent.getActivity(context, 0, intent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_task_planner)
                 .setContentTitle(task.title)
-                .setContentText("Hello World!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(activity);
+                .setContentText(String.format(getResources().getString(R.string.reminder_text), task.title, DateConverters.DateToString(task.dueDate)))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        Intent intent = new Intent(context, ReminderNotificationPublisher.class);
+        PendingIntent activity = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(activity);
 
         Notification notification = builder.build();
-        notificationManager.notify(notificationId, notification);
 
+        Intent notificationIntent = new Intent(context, ReminderNotificationPublisher.class);
+        notificationIntent.putExtra(ReminderNotificationPublisher.NOTIFICATION_ID, notificationId);
+        notificationIntent.putExtra(ReminderNotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
+
 }

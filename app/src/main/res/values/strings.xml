@@ -36,6 +36,7 @@
     <string name="choose_state">Change state of task</string>
     <string name="set_reminder">Reminder</string>
     <string name="button_save">Save</string>
+    <string name="reminder_text">Your task %1$s is due to %2$s.</string>
     <!-- Toasts-->
     <string name="empty_not_saved">Task not saved because it is empty.</string>
     <string name="new_task_wrong_date">Wrong datetime format.</string>
