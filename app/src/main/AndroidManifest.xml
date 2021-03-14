@@ -10,8 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_task_planner_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditCategoryActivity"
-            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".EditCategoryActivity"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".NewCategoryActivity"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".EditTaskActivity"

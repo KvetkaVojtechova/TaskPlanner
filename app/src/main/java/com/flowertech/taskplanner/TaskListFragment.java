@@ -110,6 +110,17 @@ public class TaskListFragment extends Fragment {
             startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
         });
 
+        /*Intent intt = getActivity().getIntent();
+        if (intt != null){
+            Bundle bund = intt.getExtras();
+            Long id = bund.getLong(EditTaskActivity.EDIT_TASK);
+            Intent intent = new Intent(v.getContext(), EditTaskActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putLong(EditTaskActivity.EDIT_TASK, id);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
+        }*/
+
         return v;
     }
 

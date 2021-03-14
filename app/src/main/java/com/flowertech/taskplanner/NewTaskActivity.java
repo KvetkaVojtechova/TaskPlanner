@@ -165,7 +165,11 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                 .setContentText(String.format(getResources().getString(R.string.reminder_text), task.title, DateConverters.DateToString(task.dueDate)))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        Intent intent = new Intent(context, ReminderNotificationPublisher.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong(EditTaskActivity.EDIT_TASK, task.id);
+
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtras(bundle);
         PendingIntent activity = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setContentIntent(activity);
 

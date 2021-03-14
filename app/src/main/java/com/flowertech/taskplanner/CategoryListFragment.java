@@ -92,7 +92,7 @@ public class CategoryListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.category_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
