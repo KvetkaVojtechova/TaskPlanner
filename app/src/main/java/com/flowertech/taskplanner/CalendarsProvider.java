@@ -2,11 +2,8 @@ package com.flowertech.taskplanner;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.RequiresApi;
 
 import java.util.Calendar;
 
@@ -34,7 +31,6 @@ public class CalendarsProvider {
         );
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void setReminder(Context context, Task task, TextView textViewReminder, Activity activity){
         if(task.dueDate == null){
             Toast.makeText(

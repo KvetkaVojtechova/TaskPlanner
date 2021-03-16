@@ -1,13 +1,6 @@
 package com.flowertech.taskplanner;
 
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,9 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 public class NewTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -34,7 +25,6 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
     private Task task;
     NotificationProvider notificationProvider;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +66,6 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         categorySpinner.createSpinner(mNewTaskViewModel, this, task, mSpinnerCategory, this);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void addTask() {
         //validate inputs
         if(TextUtils.isEmpty(mEditTextTitle.getText()) &&
@@ -99,8 +88,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
             }
 
             AppDatabase.databaseWriteExecutor.execute(() -> {
-                Long id = mNewTaskViewModel.insert(task);
-                task.id = id;
+                task.id = mNewTaskViewModel.insert(task);
                 if (task.reminder != null){
                     long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
                     notificationProvider.scheduleNotification(this, difference, task);
@@ -131,7 +119,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         menuInflater.inflate(R.menu.add_task_menu, menu);
         return true;
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add_task) {

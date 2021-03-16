@@ -1,10 +1,7 @@
 package com.flowertech.taskplanner;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -18,7 +15,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -46,7 +42,6 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     private Task task;
     private Date originalReminder;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,15 +76,10 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         setTitle(R.string.activity_edit_task_title);
 
         //when clicked on mTextViewDueDate, invoke datetime picker and setText to mTextViewDueDate
-        mTextViewDueDate.setOnClickListener(v ->
-                calendarsProvider.setDueDate(this, task, mTextViewDueDate, mTextViewReminder, EditTaskActivity.this)
-        );
+        mTextViewDueDate.setOnClickListener(v -> calendarsProvider.setDueDate(this, task, mTextViewDueDate, mTextViewReminder, EditTaskActivity.this));
 
         //when clicked on mTextViewReminder, invoke datetime picker and setText to mTextViewReminder
-        mTextViewReminder.setOnClickListener(v -> {
-                calendarsProvider.setReminder(this, task, mTextViewReminder, EditTaskActivity.this);
-                cancelNotification(this, (int)task.id);
-        });
+        mTextViewReminder.setOnClickListener(v -> calendarsProvider.setReminder(this, task, mTextViewReminder, EditTaskActivity.this));
 
         //spinner category
         mSpinnerCategory.setOnItemSelectedListener(this);
@@ -146,7 +136,6 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveTask() {
         if(TextUtils.isEmpty(mEditTextTitle.getText()) &&
                 TextUtils.isEmpty(mEditTextDescription.getText()) &&
@@ -170,7 +159,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 notificationProvider.cancelNotification(this, (int)task.id);
             }
 
-            if (task.reminder != null){
+            if (task.reminder != null || task.reminder != originalReminder){
                 long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
                 notificationProvider.scheduleNotification(this, difference, task);
             }
@@ -200,7 +189,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         menuInflater.inflate(R.menu.save_task_menu, menu);
         return true;
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save_task) {
@@ -208,10 +197,5 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public static void cancelNotification(Context context, int id) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(id);
     }
 }
