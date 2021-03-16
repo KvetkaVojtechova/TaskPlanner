@@ -2,10 +2,16 @@ package com.flowertech.taskplanner;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuCompat;
@@ -14,14 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -110,16 +108,20 @@ public class TaskListFragment extends Fragment {
             startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
         });
 
-        /*Intent intt = getActivity().getIntent();
+        Intent intt = getActivity().getIntent();
         if (intt != null){
             Bundle bund = intt.getExtras();
-            Long id = bund.getLong(EditTaskActivity.EDIT_TASK);
-            Intent intent = new Intent(v.getContext(), EditTaskActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putLong(EditTaskActivity.EDIT_TASK, id);
-            intent.putExtras(bundle);
-            startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
-        }*/
+            if (bund != null) {
+                Long id = bund.getLong(EditTaskActivity.EDIT_TASK);
+                if (id != null) {
+                    Intent intent = new Intent(v.getContext(), EditTaskActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong(EditTaskActivity.EDIT_TASK, id);
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
+                }
+            }
+        }
 
         return v;
     }
