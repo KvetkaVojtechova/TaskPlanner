@@ -32,6 +32,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
     private TextView mTextViewReminder;
     private NewTaskViewModel mNewTaskViewModel;
     private Task task;
+    NotificationProvider notificationProvider;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -41,6 +42,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
 
         mNewTaskViewModel = new ViewModelProvider(this).get(NewTaskViewModel.class);
         CalendarsProvider calendarsProvider = new CalendarsProvider();
+        notificationProvider = new NotificationProvider();
 
         task = new Task();
 
@@ -96,12 +98,15 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                 return;
             }
 
-            if (task.reminder != null){
-                long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
-                scheduleNotification(this, difference, (int)task.id);
-            }
+            AppDatabase.databaseWriteExecutor.execute(() -> {
+                Long id = mNewTaskViewModel.insert(task);
+                task.id = id;
+                if (task.reminder != null){
+                    long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
+                    notificationProvider.scheduleNotification(this, difference, task);
+                }
+            });
 
-            mNewTaskViewModel.insert(task);
         }
         finish();
     }
@@ -135,35 +140,4 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         }
         return super.onOptionsItemSelected(item);
     }
-
-    public void scheduleNotification(Context context, long delay, int notificationId) {
-        //delay is after how much time(in millis) from current time you want to schedule the notification
-
-        //creates a notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher_task_planner)
-                .setContentTitle(task.title)
-                .setContentText(String.format(getResources().getString(R.string.reminder_text), task.title, DateConverters.DateToString(task.dueDate)))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        Bundle bundle = new Bundle();
-        bundle.putLong(EditTaskActivity.EDIT_TASK, task.id);
-
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtras(bundle);
-        PendingIntent activity = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        builder.setContentIntent(activity);
-
-        Notification notification = builder.build();
-
-        Intent notificationIntent = new Intent(context, ReminderNotificationPublisher.class);
-        notificationIntent.putExtra(ReminderNotificationPublisher.NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(ReminderNotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
-
 }

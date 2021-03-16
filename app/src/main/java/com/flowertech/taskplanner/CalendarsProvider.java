@@ -21,6 +21,8 @@ public class CalendarsProvider {
                     if ((c.getTimeInMillis() - System.currentTimeMillis()) > 0){
                         task.dueDate = c.getTime();
                         textViewDueDate.setText(DateConverters.DateToString(task.dueDate));
+                        task.reminder = null;
+                        textViewReminder.setText(R.string.hint_date);
                     } else {
                         Toast.makeText(
                                 context,
@@ -30,8 +32,6 @@ public class CalendarsProvider {
 
                 }, null
         );
-        task.reminder = null;
-        textViewReminder.setText(R.string.hint_date);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

@@ -25,11 +25,7 @@ public class NewTaskViewModel extends AndroidViewModel implements CategoriesProv
         return mAllCategories;
     }
 
-    public void insert(Task task) {
-        mTaskRepository.insert(task);
-    }
-
-    public void update(Task task) {
-        mTaskRepository.update(task);
+    public Long insert(Task task) {
+        return mTaskRepository.insert(task);
     }
 }

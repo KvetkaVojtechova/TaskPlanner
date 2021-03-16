@@ -29,10 +29,6 @@ public class EditTaskViewModel extends AndroidViewModel implements CategoriesPro
         return mTaskRepository.getTask(id);
     }
 
-    public void insert(Task task) {
-        mTaskRepository.insert(task);
-    }
-
     public void update(Task task) {
         mTaskRepository.update(task);
     }

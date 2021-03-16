@@ -82,10 +82,8 @@ class TaskRepository {
         return mTaskDao.getTask(id);
     }
 
-    void insert(Task task) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            mTaskDao.insert(task);
-        });
+    Long insert(Task task) {
+        return mTaskDao.insert(task);
     }
 
     void update(Task task) {
