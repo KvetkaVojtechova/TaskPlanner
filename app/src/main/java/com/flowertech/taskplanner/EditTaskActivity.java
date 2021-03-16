@@ -210,8 +210,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         return super.onOptionsItemSelected(item);
     }
 
-    public static void cancelNotification(Context context, int id) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(id);
+    public void cancelNotification(Context context, int id) {
+        notificationProvider.cancelNotification(context, id);
     }
 }
