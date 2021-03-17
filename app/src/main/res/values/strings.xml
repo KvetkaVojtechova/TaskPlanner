@@ -34,6 +34,9 @@
     <string name="category">Category</string>
     <string name="hint_date">Pick date (dd.mm.yyyy hh:mm)</string>
     <string name="choose_state">Change state of task</string>
+    <string name="created">Created</string>
+    <string name="in_progress">In progress</string>
+    <string name="closed">Finished</string>
     <string name="set_reminder">Reminder</string>
     <string name="button_save">Save</string>
     <string name="reminder_text">Your task %1$s is due to %2$s.</string>

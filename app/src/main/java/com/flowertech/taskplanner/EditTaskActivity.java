@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Date;
@@ -100,6 +101,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 mTextViewInProgress.setText(inProgress + DateConverters.DateToString(task.startDate));
             if (task.endDate != null)
                 mTextViewFinished.setText(closed + DateConverters.DateToString(task.endDate));
+            switchStateColor(task.state);
 
 
             CategorySpinner categorySpinner = new CategorySpinner();
@@ -107,30 +109,24 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
             //created image
             mImageStateCreated.setOnClickListener(v -> {
-                mImageStateCreated.setBackgroundColor(Color.rgb(230, 230, 230));
-                mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
-                mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.created;
+                switchStateColor(task.state);
                 task.startDate = null;
                 task.endDate = null;
             });
 
             //in progress image
             mImageStateInProgress.setOnClickListener(v -> {
-                mImageStateInProgress.setBackgroundColor(Color.rgb(230, 230, 230));
-                mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
-                mImageStateClosed.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.inProgress;
+                switchStateColor(task.state);
                 task.startDate = new Date();
                 task.endDate = null;
             });
 
             //closed image
             mImageStateClosed.setOnClickListener(v -> {
-                mImageStateClosed.setBackgroundColor(Color.rgb(230, 230, 230));
-                mImageStateCreated.setBackgroundColor(Color.rgb(255, 255, 255));
-                mImageStateInProgress.setBackgroundColor(Color.rgb(255, 255, 255));
                 task.state = State.closed;
+                switchStateColor(task.state);
                 task.endDate = new Date();
             });
         });
@@ -197,5 +193,21 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void switchStateColor(State state){
+        if (state == State.created){
+            mImageStateCreated.setColorFilter(ContextCompat.getColor(this, R.color.blueGray), android.graphics.PorterDuff.Mode.SRC_IN);
+            mImageStateInProgress.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
+            mImageStateClosed.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else if (state == State.inProgress){
+            mImageStateInProgress.setColorFilter(ContextCompat.getColor(this, R.color.blueGray), android.graphics.PorterDuff.Mode.SRC_IN);
+            mImageStateCreated.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
+            mImageStateClosed.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            mImageStateClosed.setColorFilter(ContextCompat.getColor(this, R.color.blueGray), android.graphics.PorterDuff.Mode.SRC_IN);
+            mImageStateCreated.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
+            mImageStateInProgress.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
     }
 }
