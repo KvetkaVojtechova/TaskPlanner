@@ -164,15 +164,29 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
 
-        <TextView
-            android:id="@+id/edit_text_date"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:orientation="horizontal"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/hint_date"/>
+            android:layout_marginBottom="10dp">
+                <TextView
+                    android:id="@+id/edit_text_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:hint="@string/hint_date"/>
+
+                <Button
+                    android:id="@+id/due_date_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="@string/clear"
+                    android:background="@drawable/outlined_button"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -182,15 +196,28 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp" />
 
-        <TextView
-            android:id="@+id/edit_text_reminder"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:orientation="horizontal"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/hint_date"/>
+            android:layout_marginBottom="10dp">
+            <TextView
+                android:id="@+id/edit_text_reminder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_weight="1"
+                android:hint="@string/hint_date"/>
+
+                <Button
+                    android:id="@+id/reminder_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="@string/clear"
+                    android:background="@drawable/outlined_button"/>
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -37,6 +39,8 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     private ImageView mImageStateInProgress;
     private ImageView mImageStateClosed;
     private Spinner mSpinnerCategory;
+    private Button mClearDueDate;
+    private Button mClearReminder;
     private EditTaskViewModel mEditTaskViewModel;
     NotificationProvider notificationProvider;
 
@@ -71,6 +75,8 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         mImageStateInProgress = findViewById(R.id.image_view_state_2);
         mImageStateClosed = findViewById(R.id.image_view_state_3);
         mSpinnerCategory = findViewById(R.id.spinner_category);
+        mClearDueDate = findViewById(R.id.due_date_clear);
+        mClearReminder = findViewById(R.id.reminder_clear);
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
@@ -84,6 +90,43 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
         //spinner category
         mSpinnerCategory.setOnItemSelectedListener(this);
+
+        //created image
+        mImageStateCreated.setOnClickListener(v -> {
+            task.state = State.created;
+            switchStateColor(task.state);
+            task.startDate = null;
+            task.endDate = null;
+        });
+
+        //in progress image
+        mImageStateInProgress.setOnClickListener(v -> {
+            task.state = State.inProgress;
+            switchStateColor(task.state);
+            task.startDate = new Date();
+            task.endDate = null;
+        });
+
+        //closed image
+        mImageStateClosed.setOnClickListener(v -> {
+            task.state = State.closed;
+            switchStateColor(task.state);
+            task.endDate = new Date();
+        });
+
+        //when clicked on mClearDueDate, clear due date
+        mClearDueDate.setOnClickListener(v -> {
+            task.dueDate = null;
+            task.reminder = null;
+            mTextViewDueDate.setText(R.string.hint_date);
+            mTextViewReminder.setText(R.string.hint_date);
+        });
+
+        //when clicked on mClearReminder, clear reminder date
+        mClearReminder.setOnClickListener(v -> {
+            task.reminder = null;
+            mTextViewReminder.setText(R.string.hint_date);
+        });
 
         //get task and insert it
         mEditTaskViewModel.getTask(id).observe(this, editTask -> {
@@ -106,29 +149,6 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
             CategorySpinner categorySpinner = new CategorySpinner();
             categorySpinner.createSpinner(mEditTaskViewModel, this, task, mSpinnerCategory, this);
-
-            //created image
-            mImageStateCreated.setOnClickListener(v -> {
-                task.state = State.created;
-                switchStateColor(task.state);
-                task.startDate = null;
-                task.endDate = null;
-            });
-
-            //in progress image
-            mImageStateInProgress.setOnClickListener(v -> {
-                task.state = State.inProgress;
-                switchStateColor(task.state);
-                task.startDate = new Date();
-                task.endDate = null;
-            });
-
-            //closed image
-            mImageStateClosed.setOnClickListener(v -> {
-                task.state = State.closed;
-                switchStateColor(task.state);
-                task.endDate = new Date();
-            });
         });
     }
 
@@ -155,7 +175,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 notificationProvider.cancelNotification(this, (int)task.id);
             }
 
-            if (task.reminder != null || task.reminder != originalReminder){
+            if (task.reminder != null && task.reminder != originalReminder){
                 long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
                 notificationProvider.scheduleNotification(this, difference, task);
             }

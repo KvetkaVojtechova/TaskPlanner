@@ -38,6 +38,7 @@
     <string name="in_progress">Prebieha</string>
     <string name="closed">Ukončené</string>
     <string name="set_reminder">Pripomienka</string>
+    <string name="clear">Vymazať</string>
     <string name="button_save">Uložiť</string>
     <string name="reminder_text">Úloha %1$s má byť hotová do %2$s.</string>
     <!-- Toasts-->

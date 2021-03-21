@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,6 +22,8 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
     private EditText mEditTextDescription;
     private TextView mTextViewDueDate;
     private TextView mTextViewReminder;
+    private Button mClearDueDate;
+    private Button mClearReminder;
     private NewTaskViewModel mNewTaskViewModel;
     private Task task;
     NotificationProvider notificationProvider;
@@ -41,6 +44,8 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         mTextViewDueDate = findViewById(R.id.edit_text_date);
         Spinner mSpinnerCategory = findViewById(R.id.spinner_category);
         mTextViewReminder = findViewById(R.id.edit_text_reminder);
+        mClearDueDate = findViewById(R.id.due_date_clear);
+        mClearReminder = findViewById(R.id.reminder_clear);
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
@@ -57,13 +62,25 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                 calendarsProvider.setReminder(this, task, mTextViewReminder, NewTaskActivity.this)
         );
 
-
-
         //spinner category
         mSpinnerCategory.setOnItemSelectedListener(this);
 
         CategorySpinner categorySpinner = new CategorySpinner();
         categorySpinner.createSpinner(mNewTaskViewModel, this, task, mSpinnerCategory, this);
+
+        //when clicked on mClearDueDate, clear due date
+        mClearDueDate.setOnClickListener(v -> {
+            task.dueDate = null;
+            task.reminder = null;
+            mTextViewDueDate.setText(R.string.hint_date);
+            mTextViewReminder.setText(R.string.hint_date);
+        });
+
+        //when clicked on mClearReminder, clear reminder date
+        mClearReminder.setOnClickListener(v -> {
+            task.reminder = null;
+            mTextViewReminder.setText(R.string.hint_date);
+        });
     }
 
     private void addTask() {
@@ -94,7 +111,6 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                     notificationProvider.scheduleNotification(this, difference, task);
                 }
             });
-
         }
         finish();
     }
