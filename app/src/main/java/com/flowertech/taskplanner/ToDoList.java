@@ -8,12 +8,12 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "toDoLists"/*,
+@Entity(tableName = "toDoLists",
         foreignKeys = {@ForeignKey(entity = Task.class,
         parentColumns = "id",
-                childColumns = "task_list_id",
-                onDelete = ForeignKey.CASCADE,
-                onUpdate = ForeignKey.CASCADE)}*/)
+        childColumns = "task_list_id",
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE)})
 public class ToDoList {
 
     public ToDoList() {

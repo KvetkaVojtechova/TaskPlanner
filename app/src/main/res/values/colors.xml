@@ -8,4 +8,7 @@
     <color name="pastel_turquoise">#C3ECF1</color>
     <color name="light_gray">#E6E6E6</color>
     <color name="black_button">#89000000</color>
+    <color name="pastel_green">#edffec</color>
+    <color name="pastel_blue">#97BDDC</color>
+    <color name="system_white">@android:color/white</color>
 </resources>

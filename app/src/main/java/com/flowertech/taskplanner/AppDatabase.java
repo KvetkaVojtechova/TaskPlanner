@@ -13,12 +13,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {Task.class, Category.class/*, ToDoList.class*/}, version = 1, exportSchema = false)
+@Database(entities = {Task.class, Category.class, ToDoList.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
     public abstract CategoryDao categoryDao();
-    //public abstract ToDoListDao toDoListDao();
+    public abstract ToDoListDao toDoListDao();
 
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
@@ -39,7 +39,7 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     //creates two tasks
-    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
+    private static final RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
@@ -47,6 +47,7 @@ public abstract class AppDatabase extends RoomDatabase {
             databaseWriteExecutor.execute(() -> {
                 TaskDao tDao = INSTANCE.taskDao();
                 CategoryDao cDao = INSTANCE.categoryDao();
+                ToDoListDao toDao = INSTANCE.toDoListDao();
 
                 Task task = new Task();
                 task.title = "Exam";
@@ -72,6 +73,22 @@ public abstract class AppDatabase extends RoomDatabase {
                 category.title = "Geography";
                 category.description = "Geography class";
                 cDao.insert(category);
+
+                ToDoList toDoList = new ToDoList();
+                toDoList.taskListId = 1L;
+                toDoList.checked = false;
+                toDoList.description = "str. 5";
+                toDao.insert(toDoList);
+                toDoList = new ToDoList();
+                toDoList.taskListId = 1L;
+                toDoList.checked = false;
+                toDoList.description = "str. 6";
+                toDao.insert(toDoList);
+                toDoList = new ToDoList();
+                toDoList.taskListId = 1L;
+                toDoList.checked = false;
+                toDoList.description = "str. 7";
+                toDao.insert(toDoList);
             });
         }
     };

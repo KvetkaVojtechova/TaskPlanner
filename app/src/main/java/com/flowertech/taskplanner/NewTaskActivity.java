@@ -22,8 +22,6 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
     private EditText mEditTextDescription;
     private TextView mTextViewDueDate;
     private TextView mTextViewReminder;
-    private Button mClearDueDate;
-    private Button mClearReminder;
     private NewTaskViewModel mNewTaskViewModel;
     private Task task;
     NotificationProvider notificationProvider;
@@ -44,8 +42,9 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         mTextViewDueDate = findViewById(R.id.edit_text_date);
         Spinner mSpinnerCategory = findViewById(R.id.spinner_category);
         mTextViewReminder = findViewById(R.id.edit_text_reminder);
-        mClearDueDate = findViewById(R.id.due_date_clear);
-        mClearReminder = findViewById(R.id.reminder_clear);
+        Button mClearDueDate = findViewById(R.id.due_date_clear);
+        Button mClearReminder = findViewById(R.id.reminder_clear);
+        //ListView mListViewToDo = findViewById(R.id.to_do_list_view);
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
@@ -81,6 +80,17 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
             task.reminder = null;
             mTextViewReminder.setText(R.string.hint_date);
         });
+
+
+        /*mNewTaskViewModel.getAllToDos().observe(this, toDoEntities -> {
+            // Creating adapter for list view
+            ArrayAdapter<ToDoList> toDoListAdapter = new ArrayAdapter<ToDoList>(this, R.layout.to_do_list_item, toDoEntities);
+
+            // attaching data adapter to list view
+            mListViewToDo.setAdapter(toDoListAdapter);
+
+        });*/
+
     }
 
     private void addTask() {

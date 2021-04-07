@@ -1,27 +1,34 @@
 package com.flowertech.taskplanner;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Date;
+import java.util.List;
 
 public class EditTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -39,18 +46,22 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     private ImageView mImageStateInProgress;
     private ImageView mImageStateClosed;
     private Spinner mSpinnerCategory;
-    private Button mClearDueDate;
-    private Button mClearReminder;
     private EditTaskViewModel mEditTaskViewModel;
+    private LinearLayout mLinearLayoutToDoList;
+    private ImageButton mRemoveToDo;
+    private ImageButton mEditToDo;
     NotificationProvider notificationProvider;
 
     private Task task;
     private Date originalReminder;
+    private List<ToDoList> toDoListList;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
+        context = this;
 
         mEditTaskViewModel = new ViewModelProvider(this).get(EditTaskViewModel.class);
         CalendarsProvider calendarsProvider = new CalendarsProvider();
@@ -75,8 +86,10 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         mImageStateInProgress = findViewById(R.id.image_view_state_2);
         mImageStateClosed = findViewById(R.id.image_view_state_3);
         mSpinnerCategory = findViewById(R.id.spinner_category);
-        mClearDueDate = findViewById(R.id.due_date_clear);
-        mClearReminder = findViewById(R.id.reminder_clear);
+        Button mClearDueDate = findViewById(R.id.due_date_clear);
+        Button mClearReminder = findViewById(R.id.reminder_clear);
+        mLinearLayoutToDoList = findViewById(R.id.to_do_list_view);
+        ImageButton mImageButtonAddToDO = findViewById(R.id.add_to_do);
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
@@ -128,6 +141,34 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             mTextViewReminder.setText(R.string.hint_date);
         });
 
+        //add To Do into List through dialog
+        mImageButtonAddToDO.setOnClickListener(v -> {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Add To Do");
+
+            // Set up the input
+            final EditText input = new EditText(this);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton("Add", (dialog, which) -> {
+                ToDoList toDo = new ToDoList();
+                String description = input.getText().toString();
+                if (description.length() != 0) {
+                    toDo.description = description;
+                    toDo.taskListId = task.id;
+                    mEditTaskViewModel.insert(toDo);
+                }
+            });
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        });
+
         //get task and insert it
         mEditTaskViewModel.getTask(id).observe(this, editTask -> {
             task = editTask;
@@ -149,6 +190,41 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
             CategorySpinner categorySpinner = new CategorySpinner();
             categorySpinner.createSpinner(mEditTaskViewModel, this, task, mSpinnerCategory, this);
+
+            mEditTaskViewModel.getAllToDos(task.id).observe(this, toDoEntities -> {
+                mLinearLayoutToDoList.removeAllViews();
+                toDoListList = toDoEntities;
+                //inflate Linear Layout
+                LayoutInflater inflater = getLayoutInflater();
+
+                for (int i = 0; i < toDoListList.size(); i++) {
+                    View view = inflater.inflate(R.layout.to_do_list_item, mLinearLayoutToDoList, false);
+                    CheckBox checkBox = view.findViewById(R.id.check_to_do);
+                    checkBox.setText(toDoEntities.get(i).description);
+                    if (toDoListList.get(i).checked){
+                        checkBox.setChecked(true);
+                        checkBox.setBackgroundColor(getResources().getColor(R.color.pastel_green));
+                    }
+                    else {
+                        checkBox.setChecked(false);
+                        checkBox.setBackgroundColor(getResources().getColor(R.color.system_white));
+                    }
+
+                    mLinearLayoutToDoList.addView(view);
+
+                    view.setTag(toDoListList.get(i));
+
+                    checkBox.setOnCheckedChangeListener(colorOnClickListener);
+
+                    mRemoveToDo = view.findViewById(R.id.remove_to_do);
+                    //Remove to do
+                    mRemoveToDo.setOnClickListener(deleteOnClickListener);
+
+                    mEditToDo = view.findViewById(R.id.edit_to_do);
+                    //Edit to do
+                    mEditToDo.setOnClickListener(updateOnClickListener);
+                }
+            });
         });
     }
 
@@ -215,12 +291,12 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         return super.onOptionsItemSelected(item);
     }
 
-    private void switchStateColor(State state){
-        if (state == State.created){
+    private void switchStateColor(State state) {
+        if (state == State.created) {
             mImageStateCreated.setColorFilter(ContextCompat.getColor(this, R.color.blueGray), android.graphics.PorterDuff.Mode.SRC_IN);
             mImageStateInProgress.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
             mImageStateClosed.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
-        } else if (state == State.inProgress){
+        } else if (state == State.inProgress) {
             mImageStateInProgress.setColorFilter(ContextCompat.getColor(this, R.color.blueGray), android.graphics.PorterDuff.Mode.SRC_IN);
             mImageStateCreated.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
             mImageStateClosed.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
@@ -229,5 +305,56 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             mImageStateCreated.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
             mImageStateInProgress.setColorFilter(ContextCompat.getColor(this, R.color.black_button), android.graphics.PorterDuff.Mode.SRC_IN);
         }
+
     }
+
+    CompoundButton.OnCheckedChangeListener colorOnClickListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            View itemView = (View) buttonView.getParent();
+            ToDoList toDo = (ToDoList) itemView.getTag();
+            toDo.checked = buttonView.isChecked();
+            mEditTaskViewModel.update(toDo);
+        }
+    };
+
+    View.OnClickListener deleteOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            View itemView = (View) v.getParent();
+            ToDoList toDo = (ToDoList) itemView.getTag();
+            mEditTaskViewModel.delete(toDo);
+        }
+    };
+
+    View.OnClickListener updateOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            View itemView = (View) v.getParent();
+            ToDoList toDo = (ToDoList) itemView.getTag();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Update To Do");
+
+            // Set up the input
+            final EditText input = new EditText(context);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            input.setText(toDo.description);
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton("Save", (dialog, which) -> {
+                String description = input.getText().toString();
+                if (description.length() != 0)
+                    toDo.description = description;
+
+                mEditTaskViewModel.update(toDo);
+            });
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        }
+    };
 }

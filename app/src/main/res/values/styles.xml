@@ -4,7 +4,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/blueGray</item>
         <item name="colorPrimaryDark">@color/blueGray</item>
-        <item name="colorAccent">@color/blueGray</item>
+        <item name="colorAccent">@color/pastel_blue</item>
     </style>
 
     <!-- The default font for RecyclerView items is too small.
