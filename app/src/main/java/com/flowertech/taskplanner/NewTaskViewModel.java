@@ -26,9 +26,12 @@ public class NewTaskViewModel extends AndroidViewModel implements CategoriesProv
         return mAllCategories;
     }
 
-    public LiveData<List<ToDoList>> getAllToDos(Long id) {return mToDoListRepository.getAllToDos(id);}
-
     public Long insert(Task task) {
         return mTaskRepository.insert(task);
+    }
+
+    //Methods for to do list
+    public void insert(ToDoList toDoList) {
+        mToDoListRepository.insert(toDoList);
     }
 }

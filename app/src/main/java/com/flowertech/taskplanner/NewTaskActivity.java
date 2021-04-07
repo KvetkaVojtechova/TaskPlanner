@@ -1,14 +1,22 @@
 package com.flowertech.taskplanner;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,20 +24,28 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NewTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private EditText mEditTextTitle;
     private EditText mEditTextDescription;
     private TextView mTextViewDueDate;
     private TextView mTextViewReminder;
+    private LinearLayout mLinearLayoutToDoList;
     private NewTaskViewModel mNewTaskViewModel;
     private Task task;
+    private final List<ToDoList> toDoList = new ArrayList<>();
+    private Context context;
     NotificationProvider notificationProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_task);
+
+        context = this;
 
         mNewTaskViewModel = new ViewModelProvider(this).get(NewTaskViewModel.class);
         CalendarsProvider calendarsProvider = new CalendarsProvider();
@@ -44,7 +60,8 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         mTextViewReminder = findViewById(R.id.edit_text_reminder);
         Button mClearDueDate = findViewById(R.id.due_date_clear);
         Button mClearReminder = findViewById(R.id.reminder_clear);
-        //ListView mListViewToDo = findViewById(R.id.to_do_list_view);
+        mLinearLayoutToDoList = findViewById(R.id.to_do_list_view);
+        ImageButton mImageButtonAddToDO = findViewById(R.id.add_to_do);
 
         //menu back
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_back_24);
@@ -81,16 +98,34 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
             mTextViewReminder.setText(R.string.hint_date);
         });
 
+        //add To Do into List through dialog
+        mImageButtonAddToDO.setOnClickListener(v -> {
 
-        /*mNewTaskViewModel.getAllToDos().observe(this, toDoEntities -> {
-            // Creating adapter for list view
-            ArrayAdapter<ToDoList> toDoListAdapter = new ArrayAdapter<ToDoList>(this, R.layout.to_do_list_item, toDoEntities);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Add To Do");
 
-            // attaching data adapter to list view
-            mListViewToDo.setAdapter(toDoListAdapter);
+            // Set up the input
+            final EditText input = new EditText(this);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            builder.setView(input);
 
-        });*/
+            // Set up the buttons
+            builder.setPositiveButton("Add", (dialog, which) -> {
+                ToDoList toDo = new ToDoList();
+                String description = input.getText().toString();
+                if (description.length() != 0) {
+                    toDo.description = description;
+                    toDo.checked = false;
+                    toDoList.add(toDo);
+                    showToDoList();
+                }
+            });
 
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        });
     }
 
     private void addTask() {
@@ -119,6 +154,14 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                 if (task.reminder != null){
                     long difference = task.reminder.toInstant().toEpochMilli() - System.currentTimeMillis();
                     notificationProvider.scheduleNotification(this, difference, task);
+                }
+                if (toDoList != null){
+                    for (int i = 0; i < toDoList.size(); i++){
+                        ToDoList toDo;
+                        toDo = toDoList.get(i);
+                        toDo.taskListId = task.id;
+                        mNewTaskViewModel.insert(toDo);
+                    }
                 }
             });
         }
@@ -154,4 +197,88 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void showToDoList(){
+        //inflate Linear Layout
+        LayoutInflater inflater = getLayoutInflater();
+        mLinearLayoutToDoList.removeAllViews();
+
+        for (int i = 0; i < toDoList.size(); i++) {
+
+            View view = inflater.inflate(R.layout.to_do_list_item, mLinearLayoutToDoList, false);
+            CheckBox checkBox = view.findViewById(R.id.check_to_do);
+            checkBox.setText(toDoList.get(i).description);
+            if (toDoList.get(i).checked){
+                checkBox.setChecked(true);
+                checkBox.setBackgroundColor(getResources().getColor(R.color.pastel_green));
+            }
+            else {
+                checkBox.setChecked(false);
+                checkBox.setBackgroundColor(getResources().getColor(R.color.system_white));
+            }
+
+            mLinearLayoutToDoList.addView(view);
+
+            view.setTag(toDoList.get(i));
+
+            checkBox.setOnCheckedChangeListener(colorOnClickListener);
+
+            ImageButton mRemoveToDo = view.findViewById(R.id.remove_to_do);
+            //Remove to do
+            mRemoveToDo.setOnClickListener(deleteOnClickListener);
+
+            ImageButton mEditToDo = view.findViewById(R.id.edit_to_do);
+            //Edit to do
+            mEditToDo.setOnClickListener(updateOnClickListener);
+        }
+    }
+
+    CompoundButton.OnCheckedChangeListener colorOnClickListener = (buttonView, isChecked) -> {
+        View itemView = (View) buttonView.getParent();
+        ToDoList toDo = (ToDoList) itemView.getTag();
+        int index = toDoList.indexOf(toDo);
+        toDo.checked = buttonView.isChecked();
+        toDoList.set(index, toDo);
+        showToDoList();
+    };
+
+    View.OnClickListener deleteOnClickListener = v -> {
+        View itemView = (View) v.getParent();
+        ToDoList toDo = (ToDoList) itemView.getTag();
+        toDoList.remove(toDo);
+       showToDoList();
+    };
+
+    View.OnClickListener updateOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            View itemView = (View) v.getParent();
+            ToDoList toDo = (ToDoList) itemView.getTag();
+            int index = toDoList.indexOf(toDo);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Update To Do");
+
+            // Set up the input
+            final EditText input = new EditText(context);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            input.setText(toDo.description);
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton("Save", (dialog, which) -> {
+                String description = input.getText().toString();
+                if (description.length() != 0)
+                    toDo.description = description;
+
+                toDoList.set(index, toDo);
+                showToDoList();
+            });
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        }
+    };
 }
