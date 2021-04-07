@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_edit_24"
         android:background="@drawable/outlined_button"
+        android:layout_marginStart="10dp"
         android:padding="5dp" />
     <ImageButton
         android:id="@+id/remove_to_do"

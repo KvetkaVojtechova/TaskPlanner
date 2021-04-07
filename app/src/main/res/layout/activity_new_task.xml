@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
     tools:context=".NewTaskActivity">
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="50dp"
             android:layout_marginRight="10dp"
             android:text="@string/add_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
@@ -135,43 +134,62 @@
                 android:text="@string/clear" />
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_marginTop= "10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/blue_rectangle_background" >
 
-            <TextView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/to_do_list"
+                    android:layout_gravity="center"
+                    android:textColor="@color/system_white"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                <ImageButton
+                    android:id="@+id/add_to_do"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_add_black_24"
+                    android:background="@drawable/outlined_button"
+                    android:padding="5dp"
+                    android:layout_marginEnd="18dp"/>
+
+            </LinearLayout>
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:text="@string/to_do_list"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-            <ImageButton
-                android:id="@+id/add_to_do"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_add_black_24"
-                android:background="@drawable/outlined_button"
-                android:padding="7dp"
-                android:layout_marginEnd="10dp"/>
-
-        </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp">
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="@color/system_white"
+                android:background="?android:attr/listDivider" />
 
             <LinearLayout
                 android:id="@+id/to_do_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical" >
+
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
