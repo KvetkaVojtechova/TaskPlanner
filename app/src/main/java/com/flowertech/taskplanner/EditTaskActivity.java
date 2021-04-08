@@ -56,6 +56,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     private Date originalReminder;
     private List<ToDoList> toDoListList;
     private Context context;
+    private int maxOrderNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,32 +143,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         });
 
         //add To Do into List through dialog
-        mImageButtonAddToDO.setOnClickListener(v -> {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Add To Do");
-
-            // Set up the input
-            final EditText input = new EditText(this);
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            builder.setView(input);
-
-            // Set up the buttons
-            builder.setPositiveButton("Add", (dialog, which) -> {
-                ToDoList toDo = new ToDoList();
-                String description = input.getText().toString();
-                if (description.length() != 0) {
-                    toDo.description = description;
-                    toDo.taskListId = task.id;
-                    mEditTaskViewModel.insert(toDo);
-                }
-            });
-
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-            builder.show();
-        });
+        mImageButtonAddToDO.setOnClickListener(addOnClickListener);
 
         //get task and insert it
         mEditTaskViewModel.getTask(id).observe(this, editTask -> {
@@ -190,6 +166,10 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
             CategorySpinner categorySpinner = new CategorySpinner();
             categorySpinner.createSpinner(mEditTaskViewModel, this, task, mSpinnerCategory, this);
+
+            AppDatabase.databaseWriteExecutor.execute(() -> {
+                maxOrderNum = mEditTaskViewModel.getMaxOrderNum(task.id);
+            });
 
             mEditTaskViewModel.getAllToDos(task.id).observe(this, toDoEntities -> {
                 mLinearLayoutToDoList.removeAllViews();
@@ -318,6 +298,37 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         }
     };
 
+    View.OnClickListener addOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(R.string.add_to_do);
+
+            // Set up the input
+            final EditText input = new EditText(context);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton(R.string.add, (dialog, which) -> {
+                ToDoList toDo = new ToDoList();
+                String description = input.getText().toString();
+                if (description.length() != 0) {
+                    toDo.description = description;
+                    toDo.taskListId = task.id;
+                    maxOrderNum++;
+                    toDo.order = maxOrderNum;
+                    mEditTaskViewModel.insert(toDo);
+                }
+            });
+
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        }
+    };
+
     View.OnClickListener deleteOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -334,7 +345,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             ToDoList toDo = (ToDoList) itemView.getTag();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Update To Do");
+            builder.setTitle(R.string.edit_to_do);
 
             // Set up the input
             final EditText input = new EditText(context);
@@ -344,7 +355,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             builder.setView(input);
 
             // Set up the buttons
-            builder.setPositiveButton("Save", (dialog, which) -> {
+            builder.setPositiveButton(R.string.save, (dialog, which) -> {
                 String description = input.getText().toString();
                 if (description.length() != 0)
                     toDo.description = description;
@@ -352,7 +363,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 mEditTaskViewModel.update(toDo);
             });
 
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
 
             builder.show();
         }

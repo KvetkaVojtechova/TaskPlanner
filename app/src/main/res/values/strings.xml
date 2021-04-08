@@ -51,6 +51,9 @@
     <string name="to_do_list">To Do List</string>
     <string name="button_save">Save</string>
     <string name="reminder_text">Your task %1$s is due to %2$s.</string>
+    <!-- ToDoList-->
+    <string name="add_to_do">Add To Do</string>
+    <string name="edit_to_do">Edit To Do</string>
     <!-- Toasts-->
     <string name="empty_not_saved">Task not saved because it is empty.</string>
     <string name="new_task_wrong_date">Wrong datetime format.</string>

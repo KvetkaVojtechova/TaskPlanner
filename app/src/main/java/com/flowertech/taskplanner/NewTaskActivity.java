@@ -99,33 +99,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         });
 
         //add To Do into List through dialog
-        mImageButtonAddToDO.setOnClickListener(v -> {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Add To Do");
-
-            // Set up the input
-            final EditText input = new EditText(this);
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            builder.setView(input);
-
-            // Set up the buttons
-            builder.setPositiveButton("Add", (dialog, which) -> {
-                ToDoList toDo = new ToDoList();
-                String description = input.getText().toString();
-                if (description.length() != 0) {
-                    toDo.description = description;
-                    toDo.checked = false;
-                    toDoList.add(toDo);
-                    showToDoList();
-                }
-            });
-
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-            builder.show();
-        });
+        mImageButtonAddToDO.setOnClickListener(addOnClickListener);
     }
 
     private void addTask() {
@@ -242,6 +216,37 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
         showToDoList();
     };
 
+    View.OnClickListener addOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(R.string.add_to_do);
+
+            // Set up the input
+            final EditText input = new EditText(context);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton(R.string.add, (dialog, which) -> {
+                ToDoList toDo = new ToDoList();
+                String description = input.getText().toString();
+                if (description.length() != 0) {
+                    toDo.description = description;
+                    toDo.checked = false;
+                    toDo.order = toDoList.size();
+                    toDoList.add(toDo);
+                    showToDoList();
+                }
+            });
+
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        }
+    };
+
     View.OnClickListener deleteOnClickListener = v -> {
         View itemView = (View) v.getParent();
         ToDoList toDo = (ToDoList) itemView.getTag();
@@ -257,7 +262,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
             int index = toDoList.indexOf(toDo);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Update To Do");
+            builder.setTitle(R.string.edit_to_do);
 
             // Set up the input
             final EditText input = new EditText(context);
@@ -267,7 +272,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
             builder.setView(input);
 
             // Set up the buttons
-            builder.setPositiveButton("Save", (dialog, which) -> {
+            builder.setPositiveButton(R.string.save, (dialog, which) -> {
                 String description = input.getText().toString();
                 if (description.length() != 0)
                     toDo.description = description;
@@ -276,7 +281,7 @@ public class NewTaskActivity extends AppCompatActivity implements AdapterView.On
                 showToDoList();
             });
 
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
 
             builder.show();
         }

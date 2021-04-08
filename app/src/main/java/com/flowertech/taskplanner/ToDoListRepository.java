@@ -31,6 +31,10 @@ public class ToDoListRepository {
         AppDatabase.databaseWriteExecutor.execute(() -> mToDoListDao.delete(toDoList));
     }
 
+    int getMaxOrderNum(Long id) {
+        return mToDoListDao.getMaxOrderNum(id);
+    }
+
     void deleteAll() {
         AppDatabase.databaseWriteExecutor.execute(() -> mToDoListDao.deleteAll());
     }

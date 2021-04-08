@@ -48,4 +48,8 @@ public class EditTaskViewModel extends AndroidViewModel implements CategoriesPro
     public void delete(ToDoList toDoList) {
         mToDoListRepository.delete(toDoList);
     }
+
+    int getMaxOrderNum(Long id) {
+        return mToDoListRepository.getMaxOrderNum(id);
+    }
 }

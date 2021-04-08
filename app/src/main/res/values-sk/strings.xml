@@ -51,6 +51,9 @@
     <string name="to_do_list">Zoznam úloh</string>
     <string name="button_save">Uložiť</string>
     <string name="reminder_text">Úloha %1$s má byť hotová do %2$s.</string>
+    <!-- ToDoList-->
+    <string name="add_to_do">Nová úloha</string>
+    <string name="edit_to_do">Zmeniť úlohu</string>
     <!-- Toasts-->
     <string name="empty_not_saved">Úloha nebola uložená, lebo je prázdna.</string>
     <string name="new_task_wrong_date">Zlý formát dátumu a času.</string>

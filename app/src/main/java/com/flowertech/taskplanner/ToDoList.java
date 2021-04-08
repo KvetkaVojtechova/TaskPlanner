@@ -35,4 +35,6 @@ public class ToDoList {
     @ColumnInfo(name = "task_list_id")
     public Long taskListId;
 
+    @NonNull
+    public int order;
 }

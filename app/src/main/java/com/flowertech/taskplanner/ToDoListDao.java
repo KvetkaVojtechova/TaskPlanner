@@ -20,9 +20,12 @@ public interface ToDoListDao {
     @Update
     void update(ToDoList toDoList);
 
-    @Query("SELECT * FROM toDoLists WHERE task_list_id = :id")
+    @Query("SELECT * FROM toDoLists WHERE task_list_id = :id ORDER BY ToDoLists.`order`")
     LiveData<List<ToDoList>> getAll(Long id);
 
     @Query("DELETE  FROM toDoLists")
     void deleteAll();
+
+    @Query("SELECT MAX(ToDoLists.`order`) FROM toDoLists WHERE task_list_id = :id")
+    int getMaxOrderNum(Long id);
 }
