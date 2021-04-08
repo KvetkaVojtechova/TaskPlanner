@@ -14,7 +14,7 @@ import java.util.Date;
         foreignKeys = {@ForeignKey(entity = Category.class,
         parentColumns = "id",
         childColumns = "category_id",
-        onDelete = ForeignKey.NO_ACTION,
+        onDelete = ForeignKey.SET_NULL,
         onUpdate = ForeignKey.CASCADE)})
 public class Task implements Serializable {
 
