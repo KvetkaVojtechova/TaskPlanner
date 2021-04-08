@@ -12,26 +12,12 @@ class TaskRepository {
     private final TaskDao mTaskDao;
     private final LiveData<List<Task>> mAllTasks;
     private final LiveData<List<TaskList>> mAllTaskList;
-    //filtering
-    private final LiveData<List<TaskList>> mAllCreatedTaskList;
-    private final LiveData<List<TaskList>> mAllInProgressTaskList;
-    private final LiveData<List<TaskList>> mAllClosedTaskList;
-    private final LiveData<List<TaskList>> mAllCreatedInProgressTaskList;
-    private final LiveData<List<TaskList>> mAllCreatedClosedTaskList;
-    private final LiveData<List<TaskList>> mAllInProgressClosedTaskList;
 
     TaskRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         mTaskDao = db.taskDao();
         mAllTasks = mTaskDao.getAll();
         mAllTaskList = mTaskDao.getTaskList();
-        //filtering
-        mAllCreatedTaskList = mTaskDao.getCreatedTaskList();
-        mAllInProgressTaskList = mTaskDao.getInProgressTaskList();
-        mAllClosedTaskList = mTaskDao.getClosedTaskList();
-        mAllCreatedInProgressTaskList = mTaskDao.getCreatedInProgressTaskList();
-        mAllCreatedClosedTaskList = mTaskDao.getCreatedClosedTaskList();
-        mAllInProgressClosedTaskList = mTaskDao.getInProgressClosedTaskList();
     }
 
     LiveData<List<Task>> getAllTasks() {
@@ -66,18 +52,6 @@ class TaskRepository {
 
     }
 
-    LiveData<List<TaskList>> getAllCreatedTaskList() {return mAllCreatedTaskList;}
-
-    LiveData<List<TaskList>> getAllInProgressTaskList() {return mAllInProgressTaskList;}
-
-    LiveData<List<TaskList>> getAllClosedTaskList() {return mAllClosedTaskList;}
-
-    LiveData<List<TaskList>> getAllCreatedInProgressTaskList() {return mAllCreatedInProgressTaskList;}
-
-    LiveData<List<TaskList>> getAllCreatedClosedTaskList() {return mAllCreatedClosedTaskList;}
-
-    LiveData<List<TaskList>> getAllInProgressClosedTaskList() {return mAllInProgressClosedTaskList;}
-
     LiveData<Task> getTask(Long id) {
         return mTaskDao.getTask(id);
     }
@@ -87,20 +61,14 @@ class TaskRepository {
     }
 
     void update(Task task) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            mTaskDao.update(task);
-        });
+        AppDatabase.databaseWriteExecutor.execute(() -> mTaskDao.update(task));
     }
 
     void delete(Task task) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            mTaskDao.delete(task);
-        });
+        AppDatabase.databaseWriteExecutor.execute(() -> mTaskDao.delete(task));
     }
 
     void deleteAll() {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            mTaskDao.deleteAll();
-        });
+        AppDatabase.databaseWriteExecutor.execute(() -> mTaskDao.deleteAll());
     }
 }

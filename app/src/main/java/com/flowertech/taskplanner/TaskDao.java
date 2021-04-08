@@ -38,34 +38,4 @@ public interface TaskDao {
 
     @RawQuery(observedEntities = Task.class)
     LiveData<List<TaskList>> filterTasks(SupportSQLiteQuery query);
-
-    @Query("SELECT Tasks.Id, Tasks.Title, Tasks.Description, Tasks.due_date, Tasks.State, Tasks.category_id, Categories.abbreviation " +
-            "FROM Tasks LEFT JOIN Categories ON Tasks.category_id = Categories.Id " +
-            "WHERE Tasks.State = 0")
-    LiveData<List<TaskList>> getCreatedTaskList();
-
-    @Query("SELECT Tasks.Id, Tasks.Title, Tasks.Description, Tasks.due_date, Tasks.State, Tasks.category_id, Categories.abbreviation " +
-            "FROM Tasks LEFT JOIN Categories ON Tasks.category_id = Categories.Id " +
-            "WHERE Tasks.State = 1")
-    LiveData<List<TaskList>> getInProgressTaskList();
-
-    @Query("SELECT Tasks.Id, Tasks.Title, Tasks.Description, Tasks.due_date, Tasks.State, Tasks.category_id, Categories.abbreviation " +
-            "FROM Tasks LEFT JOIN Categories ON Tasks.category_id = Categories.Id " +
-            "WHERE Tasks.State = 2")
-    LiveData<List<TaskList>> getClosedTaskList();
-
-    @Query("SELECT Tasks.Id, Tasks.Title, Tasks.Description, Tasks.due_date, Tasks.State, Tasks.category_id, Categories.abbreviation " +
-            "FROM Tasks LEFT JOIN Categories ON Tasks.category_id = Categories.Id " +
-            "WHERE Tasks.State = 0 OR Tasks.State = 1")
-    LiveData<List<TaskList>> getCreatedInProgressTaskList();
-
-    @Query("SELECT Tasks.Id, Tasks.Title, Tasks.Description, Tasks.due_date, Tasks.State, Tasks.category_id, Categories.abbreviation " +
-            "FROM Tasks LEFT JOIN Categories ON Tasks.category_id = Categories.Id " +
-            "WHERE Tasks.State = 0 OR Tasks.State = 2")
-    LiveData<List<TaskList>> getCreatedClosedTaskList();
-
-    @Query("SELECT Tasks.Id, Tasks.Title, Tasks.Description, Tasks.due_date, Tasks.State, Tasks.category_id, Categories.abbreviation " +
-            "FROM Tasks LEFT JOIN Categories ON Tasks.category_id = Categories.Id " +
-            "WHERE Tasks.State = 1 OR Tasks.State = 2")
-    LiveData<List<TaskList>> getInProgressClosedTaskList();
 }
