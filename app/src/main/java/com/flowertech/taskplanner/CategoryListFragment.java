@@ -1,5 +1,6 @@
 package com.flowertech.taskplanner;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -53,7 +54,7 @@ public class CategoryListFragment extends Fragment {
 
         mCategoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
 
-        mCategoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), categoryEntities -> adapter.submitList(categoryEntities));
+        mCategoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), adapter::submitList);
 
         //when floating button is clicked, start NewCategoryActivity
         FloatingActionButton fab = v.findViewById(R.id.fab);
@@ -99,13 +100,24 @@ public class CategoryListFragment extends Fragment {
     //put deleteAllTasks into menu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        boolean ret;
         switch (item.getItemId()) {
             case R.id.delete_all_categories:
-                mCategoryViewModel.deleteAllCategories();
-                Toast.makeText(getContext(), R.string.all_categories_deleted, Toast.LENGTH_SHORT).show();
-                return true;
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.alert_delete_title_category);
+                builder.setMessage(R.string.alert_delete_message_category);
+                builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+                    mCategoryViewModel.deleteAllCategories();
+                    Toast.makeText(getContext(), R.string.all_categories_deleted, Toast.LENGTH_SHORT).show();
+                });
+                builder.setNegativeButton(R.string.no, null);
+                builder.show();
+                ret = true;
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                ret = super.onOptionsItemSelected(item);
+                break;
         }
+        return ret;
     }
 }

@@ -150,11 +150,11 @@ public class TaskListFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(R.string.alert_delete_title);
                 builder.setMessage(R.string.alert_delete_message);
-                builder.setPositiveButton("Yes", (dialog, which) -> {
+                builder.setPositiveButton(R.string.yes, (dialog, which) -> {
                     mTaskViewModel.deleteAllTasks();
                     Toast.makeText(getContext(), R.string.all_tasks_deleted, Toast.LENGTH_SHORT).show();
                 });
-                builder.setNegativeButton("No", null);
+                builder.setNegativeButton(R.string.no, null);
                 builder.show();
                 ret = true;
                 break;

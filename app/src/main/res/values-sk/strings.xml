@@ -4,6 +4,8 @@
     <string name="add">Pridať</string>
     <string name="save">Uložiť</string>
     <string name="cancel">Zrušiť</string>
+    <string name="yes">Áno</string>
+    <string name="no">Nie</string>
 
     <!-- Main Menu-->
     <string name="menu_delete_all_tasks">Odstrániť všetky úlohy.</string>
@@ -56,6 +58,8 @@
     <!-- Category Menu-->
     <string name="menu_delete_all_categories">Odstrániť všetky kategórie</string>
     <string name="all_categories_deleted">Všetky kategórie boli odstránené.</string>
+    <string name="alert_delete_title_category">Odstrániť všetky kategórie</string>
+    <string name="alert_delete_message_category">Chcete odstrániť všetky kategórie?</string>
 
     <!-- New Category Activity-->
     <string name="activity_new_category_title">Nová kategória</string>
