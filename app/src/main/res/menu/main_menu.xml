@@ -3,16 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="all" >
-    <item
-        android:id="@+id/show_created"
-        android:title="@string/show_created" />
+        <item
+            android:id="@+id/show_created"
+            android:title="@string/show_created" />
 
-    <item
-        android:id="@+id/show_in_progress"
-        android:title="@string/show_in_progress" />
-    <item
-        android:id="@+id/show_closed"
-        android:title="@string/show_closed"/>
+        <item
+            android:id="@+id/show_in_progress"
+            android:title="@string/show_in_progress" />
+        <item
+            android:id="@+id/show_closed"
+            android:title="@string/show_closed"/>
+    </group>
+
+    <group android:checkableBehavior="single" >
+        <item
+            android:id="@+id/title_asc"
+            android:title="@string/title_asc" />
+        <item
+            android:id="@+id/title_desc"
+            android:title="@string/title_desc" />
+        <item
+            android:id="@+id/created_asc"
+            android:title="@string/created_asc"/>
+        <item
+            android:id="@+id/created_desc"
+            android:title="@string/created_desc"/>
+        <item
+            android:id="@+id/due_date_asc"
+            android:title="@string/due_date_asc"/>
+        <item
+            android:id="@+id/due_date_desc"
+            android:title="@string/due_date_desc"/>
     </group>
 
     <group>

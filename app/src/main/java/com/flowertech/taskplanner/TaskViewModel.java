@@ -31,8 +31,11 @@ public class TaskViewModel extends AndroidViewModel {
         return mTaskRepository.getTask(id);
     }
 
-    LiveData<List<TaskList>> filterTaskList(boolean isCreated, boolean isInProgress, boolean isClosed) {
-        return mTaskRepository.filterTaskList(isCreated, isInProgress, isClosed);}
+    LiveData<List<TaskList>> filterTaskList(boolean isCreated, boolean isInProgress, boolean isClosed,
+                                            boolean titleAsc, boolean titleDesc, boolean createdAsc,
+                                            boolean createdDesc, boolean dueDateAsc, boolean dueDateDesc) {
+        return mTaskRepository.filterTaskList(isCreated, isInProgress, isClosed, titleAsc, titleDesc,
+                createdAsc, createdDesc, dueDateAsc, dueDateDesc);}
 
     //insert task into TaskRepository
     public void delete(Task task) {

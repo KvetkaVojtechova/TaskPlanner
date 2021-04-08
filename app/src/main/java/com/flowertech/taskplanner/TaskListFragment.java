@@ -33,9 +33,24 @@ public class TaskListFragment extends Fragment {
     public static final String SHARED_PREF_CREATED = "createdKey";
     public static final String SHARED_PREF_IN_PROGRESS = "inProgressKey";
     public static final String SHARED_PREF_CLOSED = "closedKey";
+
+    public static final String SHARED_PREF_TITLE_ASC = "titleAscKey";
+    public static final String SHARED_PREF_TITLE_DESC = "titleDescKey";
+    public static final String SHARED_PREF_CREATED_ASC = "createdAscKey";
+    public static final String SHARED_PREF_CREATED_DESC = "createdDescKey";
+    public static final String SHARED_PREF_DUE_DATE_ASC = "dueDateAscKey";
+    public static final String SHARED_PREF_DUE_DATE_DESC = "dueDateDescKey";
+
     private boolean isCreatedChecked;
     private boolean isInProgressChecked;
     private boolean isClosedChecked;
+
+    private boolean titleAsc;
+    private boolean titleDesc;
+    private boolean createdAsc;
+    private boolean createdDesc;
+    private boolean dueDateAsc;
+    private boolean dueDateDesc;
 
     public TaskListFragment() {
         // Required empty public constructor
@@ -59,6 +74,13 @@ public class TaskListFragment extends Fragment {
         isInProgressChecked = pref.getBoolean(SHARED_PREF_IN_PROGRESS, true);
         isClosedChecked = pref.getBoolean(SHARED_PREF_CLOSED, false);
 
+        titleAsc = pref.getBoolean(SHARED_PREF_TITLE_ASC, false);
+        titleDesc = pref.getBoolean(SHARED_PREF_TITLE_DESC, false);
+        createdAsc = pref.getBoolean(SHARED_PREF_CREATED_ASC, true);
+        createdDesc = pref.getBoolean(SHARED_PREF_CREATED_DESC, false);
+        dueDateAsc = pref.getBoolean(SHARED_PREF_DUE_DATE_ASC, false);
+        dueDateDesc = pref.getBoolean(SHARED_PREF_DUE_DATE_DESC, false);
+
         //Initialize and assign variable
         RecyclerView recyclerView = v.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
@@ -69,7 +91,8 @@ public class TaskListFragment extends Fragment {
 
         mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        mTaskViewModel.filterTaskList(isCreatedChecked, isInProgressChecked, isClosedChecked).observe(getViewLifecycleOwner(), adapter::submitList);
+        mTaskViewModel.filterTaskList(isCreatedChecked, isInProgressChecked, isClosedChecked, titleAsc,
+                titleDesc, createdAsc,createdDesc,dueDateAsc,dueDateDesc).observe(getViewLifecycleOwner(), adapter::submitList);
 
         //when floating button is clicked, start NewTaskActivity
         FloatingActionButton fab = v.findViewById(R.id.fab);
@@ -108,6 +131,7 @@ public class TaskListFragment extends Fragment {
             startActivityForResult(intent, EDIT_TASK_ACTIVITY_REQUEST_CODE);
         });
 
+        //after clicked on notification opens edit task activity
         Intent intt = getActivity().getIntent();
         if (intt != null){
             Bundle bund = intt.getExtras();
@@ -139,6 +163,26 @@ public class TaskListFragment extends Fragment {
         inProgressMenuItem.setChecked(isInProgressChecked);
         MenuItem closedMenuItem = menu.findItem(R.id.show_closed);
         closedMenuItem.setChecked(isClosedChecked);
+
+        if (titleAsc){
+            MenuItem titleAscMenu = menu.findItem(R.id.title_asc);
+            titleAscMenu.setChecked(true);
+        } else if (titleDesc) {
+            MenuItem titleDescMenu = menu.findItem(R.id.title_desc);
+            titleDescMenu.setChecked(true);
+        } else if (createdAsc) {
+            MenuItem createdAscMenu = menu.findItem(R.id.created_asc);
+            createdAscMenu.setChecked(true);
+        } else if(createdDesc) {
+            MenuItem createdDescMenu = menu.findItem(R.id.created_desc);
+            createdDescMenu.setChecked(true);
+        } else if (dueDateAsc) {
+            MenuItem dueDateAscMenu = menu.findItem(R.id.due_date_asc);
+            dueDateAscMenu.setChecked(true);
+        } else if (dueDateDesc) {
+            MenuItem dueDateDescMenu = menu.findItem(R.id.due_date_desc);
+            dueDateDescMenu.setChecked(true);
+        }
     }
 
     //put deleteAllTasks into menu
@@ -191,6 +235,72 @@ public class TaskListFragment extends Fragment {
                 }
                 ret = true;
                 break;
+            case R.id.title_asc:
+                item.setChecked(true);
+                titleAsc = true;
+                titleDesc = false;
+                createdAsc = false;
+                createdDesc = false;
+                dueDateAsc = false;
+                dueDateDesc = false;
+
+                ret = true;
+                break;
+            case R.id.title_desc:
+                item.setChecked(true);
+                titleAsc = false;
+                titleDesc = true;
+                createdAsc = false;
+                createdDesc = false;
+                dueDateAsc = false;
+                dueDateDesc = false;
+
+                ret = true;
+                break;
+            case R.id.created_asc:
+                item.setChecked(true);
+                titleAsc = false;
+                titleDesc = false;
+                createdAsc = true;
+                createdDesc = false;
+                dueDateAsc = false;
+                dueDateDesc = false;
+
+                ret = true;
+                break;
+            case R.id.created_desc:
+                item.setChecked(true);
+                titleAsc = false;
+                titleDesc = false;
+                createdAsc = false;
+                createdDesc = true;
+                dueDateAsc = false;
+                dueDateDesc = false;
+
+                ret = true;
+                break;
+            case R.id.due_date_asc:
+                item.setChecked(true);
+                titleAsc = false;
+                titleDesc = false;
+                createdAsc = false;
+                createdDesc = false;
+                dueDateAsc = true;
+                dueDateDesc = false;
+
+                ret = true;
+                break;
+            case R.id.due_date_desc:
+                item.setChecked(true);
+                titleAsc = false;
+                titleDesc = false;
+                createdAsc = false;
+                createdDesc = false;
+                dueDateAsc = false;
+                dueDateDesc = true;
+
+                ret = true;
+                break;
             default:
                 ret = super.onOptionsItemSelected(item);
                 break;
@@ -200,8 +310,16 @@ public class TaskListFragment extends Fragment {
         edit.putBoolean(SHARED_PREF_CREATED, isCreatedChecked);
         edit.putBoolean(SHARED_PREF_IN_PROGRESS, isInProgressChecked);
         edit.putBoolean(SHARED_PREF_CLOSED, isClosedChecked);
+
+        edit.putBoolean(SHARED_PREF_TITLE_ASC, titleAsc);
+        edit.putBoolean(SHARED_PREF_TITLE_DESC, titleDesc);
+        edit.putBoolean(SHARED_PREF_CREATED_ASC, createdAsc);
+        edit.putBoolean(SHARED_PREF_CREATED_DESC, createdDesc);
+        edit.putBoolean(SHARED_PREF_DUE_DATE_ASC, dueDateAsc);
+        edit.putBoolean(SHARED_PREF_DUE_DATE_DESC, dueDateDesc);
         edit.apply();
-        mTaskViewModel.filterTaskList(isCreatedChecked, isInProgressChecked, isClosedChecked).observe(getViewLifecycleOwner(), adapter::submitList);
+        mTaskViewModel.filterTaskList(isCreatedChecked, isInProgressChecked, isClosedChecked, titleAsc, titleDesc,
+                createdAsc,createdDesc, dueDateAsc, dueDateDesc).observe(getViewLifecycleOwner(), adapter::submitList);
         return ret;
     }
 }

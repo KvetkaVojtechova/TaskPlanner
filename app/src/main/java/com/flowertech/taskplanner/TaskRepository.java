@@ -26,7 +26,9 @@ class TaskRepository {
 
     LiveData<List<TaskList>> getAllTaskList() {return mAllTaskList;}
 
-    LiveData<List<TaskList>> filterTaskList(boolean isCreated, boolean isInProgress, boolean isClosed) {
+    LiveData<List<TaskList>> filterTaskList(boolean isCreated, boolean isInProgress, boolean isClosed,
+                                            boolean titleAsc, boolean titleDesc, boolean createdAsc,
+                                            boolean createdDesc, boolean dueDateAsc, boolean dueDateDesc) {
 
         LiveData<List<TaskList>> filteredTaskList;
         String query = "SELECT Tasks.Id, Tasks.Title, Tasks.Description, Tasks.due_date," +
@@ -46,10 +48,22 @@ class TaskRepository {
         else if (!isCreated && isInProgress && isClosed)
             query += " WHERE Tasks.State = 1 OR Tasks.State = 2";
 
+        if (titleAsc)
+            query += " ORDER BY Tasks.title ASC";
+        else if (titleDesc)
+            query += " ORDER BY Tasks.title DESC";
+        else if (createdAsc)
+            query += " ORDER BY Tasks.created ASC";
+        else if (createdDesc)
+            query += " ORDER BY Tasks.created DESC";
+        else if (dueDateAsc)
+            query += " ORDER BY Tasks.due_date ASC";
+        else if (dueDateDesc)
+            query += " ORDER BY Tasks.due_date DESC";
+
         filteredTaskList = mTaskDao.filterTasks(new SimpleSQLiteQuery(query));
 
         return filteredTaskList;
-
     }
 
     LiveData<Task> getTask(Long id) {

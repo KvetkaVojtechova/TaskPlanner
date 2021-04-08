@@ -13,6 +13,13 @@
     <string name="show_created">Show created tasks.</string>
     <string name="show_in_progress">Show in progress tasks.</string>
     <string name="show_closed">Show finished tasks.</string>
+    <string name="title_asc">Order by title asc.</string>
+    <string name="title_desc">Order by title desc.</string>
+    <string name="created_asc">Order by date of creation asc.</string>
+    <string name="created_desc">Order by date of creation desc.</string>
+    <string name="due_date_asc">Order by due date asc.</string>
+    <string name="due_date_desc">Order by due date desc.</string>
+
 
     <!-- Bottom Navigation Menu-->
     <string name="tasks_page">Tasks</string>
